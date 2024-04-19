@@ -1,0 +1,2 @@
+rootProject.name = 'dhflour-demo-1'
+include 'api', 'core'

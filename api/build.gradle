@@ -1,0 +1,13 @@
+plugins {
+    id 'java'
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+//    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation project(':core')
+}
+
+bootRun {
+    mainClass = 'com.dhflour.dhflourdemo1.api.DhflourDemo1Application'
+}
