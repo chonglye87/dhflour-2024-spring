@@ -3,6 +3,7 @@ spring:
     import:
       - classpath:application-mail.yml
 
+# 로컬 환경 설정
 ---
 
 spring:
@@ -13,6 +14,7 @@ spring:
       - classpath:application-db-local.properties
 process.env: local
 
+# 개발계 환경 설정
 ---
 
 spring:
@@ -23,6 +25,7 @@ spring:
       - classpath:application-db-dev.properties
 process.env: development
 
+# 운영계 환경 설정
 ---
 
 spring:
