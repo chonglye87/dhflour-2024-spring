@@ -1,6 +1,12 @@
+application:
+  title: 'API 어플리케이션'
+  version: 1.0.0
+
 spring:
   profiles:
-    active: dev
+    # process env (local,dev,prod) 설정
+    # active: dev
+    # core 설정 연동
     include: core
 
   servlet:

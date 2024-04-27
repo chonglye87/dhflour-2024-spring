@@ -15,15 +15,13 @@ import java.util.Properties;
 public class DhflourDemo1Application {
 
     public static void main(String[] args) {
-        System.out.println("\uD83D\uDE80 ApiApplication started successfully");
-        String profiles = System.getProperty("spring.profiles.default");
+        System.out.println("\uD83D\uDE80 ApiApplication starting \uD83D\uDE80");
 
-        if (!StringUtils.hasText(profiles)) {
-            System.setProperty("spring.profiles.default", "api"); // properties 설정
+        // java -jar your-application.jar --spring.profiles.active=prod // 운영실행방법
+        String active = System.getProperty("spring.profiles.active");
+        if (!StringUtils.hasText(active)) {
+            System.setProperty("spring.profiles.active", "local"); // properties 설정
         }
-        System.out.printf("• spring.profiles.default : [%s]%n", System.getProperty("spring.profiles.default"));
-
-//        SpringApplication.run(Server.class, args);
         Properties p = System.getProperties();
         Enumeration keys = p.keys();
 
