@@ -1,0 +1,34 @@
+spring:
+  config:
+    import:
+      - classpath:application-mail.yml
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - classpath:application-db-local.properties
+process.env: local
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - classpath:application-db-dev.properties
+process.env: development
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import:
+      - classpath:application-db-prod.properties
+process.env: production

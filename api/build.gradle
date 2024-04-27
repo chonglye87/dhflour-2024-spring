@@ -8,6 +8,8 @@ dependencies {
     implementation project(':core')
 }
 
+
 bootRun {
     mainClass = 'com.dhflour.dhflourdemo1.api.DhflourDemo1Application'
 }
+

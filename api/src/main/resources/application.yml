@@ -1,0 +1,8 @@
+spring:
+  profiles:
+    active: dev
+    include: core
+
+  servlet:
+    multipart:
+      max-file-size: 10MB

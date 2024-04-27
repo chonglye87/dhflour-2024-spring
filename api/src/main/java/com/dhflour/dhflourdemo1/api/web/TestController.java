@@ -1,8 +1,10 @@
 package com.dhflour.dhflourdemo1.api.web;
 
 import com.dhflour.dhflourdemo1.api.service.TestAPIService;
+import com.dhflour.dhflourdemo1.core.service.MailService;
 import com.dhflour.dhflourdemo1.core.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,18 +15,26 @@ import java.util.Map;
 @RestController
 public class TestController {
 
+    @Value("${process.env}")
+    private String processEnv;
+
     @Autowired
     private TestService testService;
 
     @Autowired
     private TestAPIService testAPIService;
 
+    @Autowired
+    private MailService mailService;
+
     @GetMapping("/api/v1/test")
     public ResponseEntity<?> test1() {
         // Use generics to specify the type of the keys and values in the map
         Map<String, Object> result = new HashMap<>();
+        result.put("processEnv", processEnv);
         result.put("core", testService.test());
         result.put("api", testAPIService.test());
+        result.put("mail", mailService.getText());
         return ResponseEntity.ok(result);
     }
 }
