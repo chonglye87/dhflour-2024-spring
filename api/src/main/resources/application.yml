@@ -18,4 +18,5 @@ spring:
     import:
       - classpath:application-prometheus.properties
       - classpath:application-apidoc.properties
+      - classpath:application-logger.properties
 
