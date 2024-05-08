@@ -3,7 +3,7 @@ package com.dhflour.dhflourdemo1.api;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.ApplicationContext;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.util.StringUtils;
 
 import java.util.Enumeration;
@@ -13,6 +13,7 @@ import java.util.Properties;
         "com.dhflour.dhflourdemo1.api",
         "com.dhflour.dhflourdemo1.core",
 })
+@EnableJpaRepositories(basePackages = {"com.dhflour.dhflourdemo1.core.domain"})
 @EntityScan({"com.dhflour.dhflourdemo1.core.domain"})
 public class DhflourDemo1Application {
 

@@ -1,7 +1,7 @@
 package com.dhflour.dhflourdemo1.api.web;
 
 import com.dhflour.dhflourdemo1.api.service.TestAPIService;
-import com.dhflour.dhflourdemo1.core.service.MailService;
+import com.dhflour.dhflourdemo1.core.service.mail.MailService;
 import com.dhflour.dhflourdemo1.core.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
