@@ -18,11 +18,11 @@ public class BoardEntity {
     private Long id;
 
     @Column(nullable = false, length = 255)
-    @Schema(description = "게시물 제목", example = "")
+    @Schema(description = "게시물 제목", example = "", readOnly = true)
     private String title;
 
     @Column(nullable = false, length = 4000)
-    @Schema(description = "게시물 내용", example = "")
+    @Schema(description = "게시물 내용", example = "", readOnly = true)
     private String content;
 
     @Column(nullable = false, updatable = false)
@@ -39,7 +39,7 @@ public class BoardEntity {
             joinColumns = @JoinColumn(name = "board_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
-    @Schema(description = "연결된 카테고리 목록")
+    @Schema(description = "연결된 카테고리 목록", readOnly = true)
     private Set<CategoryEntity> categories;
 
     // 기본 생성자

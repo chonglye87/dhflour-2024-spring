@@ -19,7 +19,7 @@ public class CategoryEntity {
     private Long id;
 
     @Column(nullable = false, length = 255)
-    @Schema(description = "이름", example = "")
+    @Schema(description = "이름", example = "", readOnly = true)
     private String name;
 
     @Column(nullable = false, updatable = false)
