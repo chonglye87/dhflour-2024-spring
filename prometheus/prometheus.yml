@@ -1,0 +1,29 @@
+# 전역 설정
+global:
+  scrape_interval: 15s # 스크랩(데이터 수집) 간격을 15초마다 설정합니다. 기본값은 1분입니다.
+  evaluation_interval: 15s # 규칙을 평가하는 간격을 15초마다 설정합니다. 기본값은 1분입니다.
+  # scrape_timeout은 전역 기본값(10초)으로 설정됩니다.
+
+# 알람 매니저 설정
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          # - alertmanager:9093  # 여기에 알람 매니저의 주소를 목록으로 추가합니다.
+
+# 규칙 파일을 한 번 로드하고 전역 'evaluation_interval'에 따라 주기적으로 평가합니다.
+rule_files:
+# - "first_rules.yml"  # 첫 번째 규칙 파일
+# - "second_rules.yml"  # 두 번째 규칙 파일
+
+# 스크랩 구성, 정확히 하나의 엔드포인트를 스크랩할 구성입니다:
+# 여기서는 Prometheus 자체입니다.
+scrape_configs:
+  # 작업 이름은 이 구성에서 스크랩된 모든 시계열 데이터에 `job=<job_name>` 라벨로 추가됩니다.
+  - job_name: "spring-boot"
+    metrics_path: '/actuator/prometheus'
+    # metrics_path는 기본적으로 '/metrics'로 설정됩니다.
+    # scheme는 기본적으로 'http'로 설정됩니다.
+
+    static_configs:
+      - targets: ["host.docker.internal:8080"]  # 스크랩할 대상 목록입니다. 도커일경우 localhost 대신 host.docker.internal 사용

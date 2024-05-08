@@ -18,6 +18,9 @@ public class TestController {
     @Value("${process.env}")
     private String processEnv;
 
+    @Value("${management.endpoints.web.exposure.include}")
+    private String prometheusEnv;
+
     @Autowired
     private TestService testService;
 
@@ -35,6 +38,7 @@ public class TestController {
         result.put("core", testService.test());
         result.put("api", testAPIService.test());
         result.put("mail", mailService.getText());
+        result.put("prometheusEnv", prometheusEnv);
         return ResponseEntity.ok(result);
     }
 }

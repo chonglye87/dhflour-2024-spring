@@ -1,5 +1,6 @@
 application:
-  title: 'API 어플리케이션'
+  id: 'HyperX_API_App'
+  title: 'API Application'
   version: 1.0.0
 
 spring:
@@ -12,3 +13,8 @@ spring:
   servlet:
     multipart:
       max-file-size: 10MB
+
+  config:
+    import:
+      - classpath:application-prometheus.properties
+

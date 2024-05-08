@@ -1,16 +1,22 @@
 package com.dhflour.dhflourdemo1.api.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +27,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/**").permitAll() // `/api/**` 경로에 대한 모든 요청을 허용합니다.
+                        .requestMatchers("/actuator/**").permitAll()
                         .anyRequest().authenticated() // 다른 모든 요청은 인증이 필요합니다.
                 )
                 .securityContext(AbstractHttpConfigurer::disable) // 보안 컨텍스트 유지 기능을 비활성화합니다.

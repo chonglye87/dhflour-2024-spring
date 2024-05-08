@@ -3,6 +3,7 @@ spring:
   config:
     import:
       - classpath:application-mail.yml
+      - classpath:application-jpa.properties
 
 # 로컬 환경 설정
 ---
