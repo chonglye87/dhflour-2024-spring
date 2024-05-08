@@ -13,6 +13,7 @@ import java.time.ZonedDateTime;
 public class TimeInfo {
     private LocalDateTime serverTime;
     private String serverTimeZone;
+    private String dbProductName;
     private LocalDateTime dbTime;
     private String dbTimeZone;
     private String dbSystemTimeZone;

@@ -13,6 +13,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
+/**
+ * 서버와 DB의 타임 체크
+ */
 @Slf4j
 @Service
 public class TimeCheckService {
@@ -34,6 +37,7 @@ public class TimeCheckService {
                 log.debug("Database Product Version: " + metaData.getDatabaseProductVersion());
                 log.debug("JDBC Driver Name: " + metaData.getDriverName());
                 log.debug("JDBC Driver Version: " + metaData.getDriverVersion());
+                timeInfo.setDbProductName(metaData.getDatabaseProductName());
                 if (metaData.getDatabaseProductName() != null && metaData.getDatabaseProductName().equals("MySQL")) {
                     LocalDateTime dbLocalDateTime = jdbcTemplate.queryForObject("SELECT now()", LocalDateTime.class);
                     timeInfo.setDbTime(dbLocalDateTime);
