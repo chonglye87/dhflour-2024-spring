@@ -1,9 +1,7 @@
 package com.dhflour.dhflourdemo1.core.types.restful;
 
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,7 +1,9 @@
 package com.dhflour.dhflourdemo1.core.domain.board;
+
 import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 
