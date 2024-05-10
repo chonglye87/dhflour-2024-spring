@@ -1,10 +1,9 @@
 package com.dhflour.dhflourdemo1.api.web.board;
 
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
-import com.dhflour.dhflourdemo1.core.service.board.BoardService;
+import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
 import com.dhflour.dhflourdemo1.core.service.category.CategoryService;
-import com.dhflour.dhflourdemo1.core.types.board.BoardPaginationResponse;
-import com.dhflour.dhflourdemo1.core.types.board.BoardRequest;
+import com.dhflour.dhflourdemo1.core.types.category.CategoryPaginationResponse;
+import com.dhflour.dhflourdemo1.core.types.category.CategoryRequest;
 import com.dhflour.dhflourdemo1.core.types.pagination.PageFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,19 +27,17 @@ import java.util.Locale;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/board")
-public class BoardController {
-
-    @Autowired
-    private BoardService boardService;
+@RequestMapping("/api/v1/category")
+public class CategoryController {
+    
 
     @Autowired
     private CategoryService categoryService;
 
 
-    @Operation(summary = "[board-1] 게시판 목록 조회 (Pagination)",
+    @Operation(summary = "[category-1] 카테고리 목록 조회 (Pagination)",
             description = "게시물 페이징 목록 조회합니다.",
-            operationId = "pageBoard")
+            operationId = "pageCategory")
     @Parameters(value = {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "20"),
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "현재 페이지 0부터 (Current Page)  현재 페이지 (default : 0)", example = "0"),
@@ -48,7 +45,7 @@ public class BoardController {
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BoardPaginationResponse.class)))
+                    schema = @Schema(implementation = CategoryPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> page(@Parameter(hidden = true) @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                                   @RequestParam(required = false, defaultValue = "") String startDate,
@@ -64,45 +61,45 @@ public class BoardController {
                 .locale(locale)
                 .build();
 
-        Page<BoardEntity> page = boardService.page(filter);
-        return page != null ? ResponseEntity.ok(new BoardPaginationResponse(page)) : ResponseEntity.noContent().build();
+        Page<CategoryEntity> page = categoryService.page(filter);
+        return page != null ? ResponseEntity.ok(new CategoryPaginationResponse(page)) : ResponseEntity.noContent().build();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "[board-2] 게시판 등록",
+    @Operation(summary = "[category-2] 카테고리 등록",
             description = "새로운 게시글을 등록합니다.",
-            operationId = "createBoard")
+            operationId = "createCategory")
     @ApiResponse(responseCode = "201", description = "게시글이 성공적으로 등록됨",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BoardRequest.class)))
-    public ResponseEntity<BoardEntity> createBoard(@RequestBody BoardRequest payload) {
-        BoardEntity createdBoard = boardService.create(payload.toEntity(categoryService));
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBoard);
+                    schema = @Schema(implementation = CategoryRequest.class)))
+    public ResponseEntity<CategoryEntity> createCategory(@RequestBody CategoryRequest payload) {
+        CategoryEntity createdCategory = categoryService.create(payload.toEntity());
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCategory);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "[board-3] 게시판 상세 조회",
+    @Operation(summary = "[category-3] 카테고리 상세 조회",
             description = "특정 게시글의 상세 정보를 조회합니다.",
-            operationId = "getBoardById")
+            operationId = "getCategoryById")
     @ApiResponse(responseCode = "200", description = "게시글 상세 정보 반환",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BoardEntity.class)))
-    public ResponseEntity<BoardEntity> getBoardById(@PathVariable Long id,
+                    schema = @Schema(implementation = CategoryEntity.class)))
+    public ResponseEntity<CategoryEntity> getCategoryById(@PathVariable Long id,
                                                     Locale locale) {
-        BoardEntity board = boardService.get(locale, id);
+        CategoryEntity board = categoryService.get(locale, id);
         return board != null ? ResponseEntity.ok(board) : ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "[board-4] 게시판 삭제",
+    @Operation(summary = "[category-4] 카테고리 삭제",
             description = "특정 게시글을 삭제합니다.",
-            operationId = "deleteBoard")
+            operationId = "deleteCategory")
     @ApiResponse(responseCode = "204", description = "게시글이 성공적으로 삭제됨")
-    public ResponseEntity<?> deleteBoard(@PathVariable Long id,
+    public ResponseEntity<?> deleteCategory(@PathVariable Long id,
                                          Locale locale) {
-        BoardEntity board = boardService.get(locale, id);
+        CategoryEntity board = categoryService.get(locale, id);
         if (board != null) {
-            boardService.delete(board);
+            categoryService.delete(board);
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
