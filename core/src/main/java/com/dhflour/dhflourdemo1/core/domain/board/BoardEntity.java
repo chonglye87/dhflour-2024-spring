@@ -14,7 +14,7 @@ public class BoardEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Schema(description = "id", example = "1", readOnly = true)
+    @Schema(description = "id", example = "1", readOnly = true, requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
     @Column(nullable = false, length = 255)

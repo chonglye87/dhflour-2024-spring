@@ -45,9 +45,9 @@ public class BoardController {
             description = "게시판 목록 조회 API (Pagination)",
             operationId = "pageBoard")
     @Parameters(value = {
-            @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "20"),
-            @Parameter(in = ParameterIn.QUERY, name = "page", description = "현재 페이지 0부터 (Current Page)  현재 페이지 (default : 0)", example = "0"),
-            @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 (Sort Page)", example = ""),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "20", schema = @Schema(implementation = Integer.class)),
+            @Parameter(in = ParameterIn.QUERY, name = "page", description = "현재 페이지 0부터 (Current Page)  현재 페이지 (default : 0)", example = "0", schema = @Schema(implementation = Integer.class)),
+            @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 (Sort Page)", example = "", schema = @Schema(implementation = String.class)),
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,

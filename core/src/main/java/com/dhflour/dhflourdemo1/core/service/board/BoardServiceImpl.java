@@ -3,6 +3,8 @@ package com.dhflour.dhflourdemo1.core.service.board;
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntityRepository;
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntitySpecifications;
+import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
+import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntityRepository;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UpdateErrorException;
 import com.dhflour.dhflourdemo1.core.types.pagination.PageFilter;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -25,10 +28,22 @@ public class BoardServiceImpl implements BoardService {
     @Autowired
     private BoardEntityRepository boardEntityRepository;
 
+    @Autowired
+    private CategoryEntityRepository categoryEntityRepository;
+
     @Override
     @Transactional // 쓰기 전용 트랙젝션
     public BoardEntity create(BoardEntity entity) {
         // Validation 처리
+        return boardEntityRepository.save(entity);
+    }
+
+    @Override
+    @Transactional
+    public BoardEntity create(BoardEntity entity, Long idCategory) {
+        CategoryEntity categoryEntity = categoryEntityRepository.findById(idCategory).orElse(null);
+        if (categoryEntity != null)
+            entity.setCategories(Set.of(categoryEntity));
         return boardEntityRepository.save(entity);
     }
 

@@ -60,9 +60,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true) // 읽기 전용 트랙젝션
     public CategoryEntity get(Locale locale, Long id) {
-        return categoryEntityRepository.findById(id).map(CategoryEntity -> {
+        return categoryEntityRepository.findById(id).map(categoryEntity -> {
             // locale 다국어 처리
-            return CategoryEntity;
+            categoryEntity.getBoards().size();
+            return categoryEntity;
         }).orElse(null);
     }
 
