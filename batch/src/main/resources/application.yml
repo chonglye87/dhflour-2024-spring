@@ -1,0 +1,25 @@
+application:
+  id: 'HyperX_API_App'
+  title: 'API Application'
+  version: 1.0.0
+
+server:
+  port: 8081
+
+spring:
+  profiles:
+    # process env (local,dev,prod) 설정
+    # active: dev
+    # core 설정 연동
+    include: core
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+
+  config:
+    import:
+      - classpath:application-prometheus.properties
+      - classpath:application-apidoc.properties
+      - classpath:application-logger.properties
+
