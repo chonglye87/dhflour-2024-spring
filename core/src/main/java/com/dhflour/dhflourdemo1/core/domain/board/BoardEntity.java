@@ -3,11 +3,17 @@ package com.dhflour.dhflourdemo1.core.domain.board;
 import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
+@Setter
+@Getter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "Board")
 @Schema(description = "게시판 엔티티, 게시물 정보를 포함")
 public class BoardEntity {
@@ -42,74 +48,9 @@ public class BoardEntity {
     @Schema(description = "연결된 카테고리 목록", readOnly = true)
     private Set<CategoryEntity> categories;
 
-    // 기본 생성자
-    public BoardEntity() {
-    }
-
     // 필드를 포함한 생성자
     public BoardEntity(String title, String content) {
         this.title = title;
         this.content = content;
-    }
-
-    // Getter 및 Setter
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public Set<CategoryEntity> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(Set<CategoryEntity> categories) {
-        this.categories = categories;
-    }
-
-    // ToString 메소드
-    @Override
-    public String toString() {
-        return "BoardEntity{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                '}';
     }
 }
