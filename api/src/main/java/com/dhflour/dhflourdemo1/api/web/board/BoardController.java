@@ -37,7 +37,6 @@ public class BoardController {
     @Autowired
     private CategoryService categoryService;
 
-
     @Operation(summary = "[board-1] 게시판 목록 조회 (Pagination)",
             description = "게시물 페이징 목록 조회합니다.",
             operationId = "pageBoard")
@@ -55,7 +54,7 @@ public class BoardController {
                                   @RequestParam(required = false, defaultValue = "") String endDate,
                                   @RequestParam(required = false, defaultValue = "") String query,
                                   Locale locale) {
-
+        log.debug("로그");
         PageFilter filter = new PageFilter.Builder()
                 .pageable(pageable)
                 .query(query)
@@ -80,6 +79,24 @@ public class BoardController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdBoard);
     }
 
+    // ==============================
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "[board-5] 게시판 수정",
+            description = "ID의 게시글을 수정합니다.",
+            operationId = "updateBoard")
+    @ApiResponse(responseCode = "200", description = "게시글이 성공적으로 수정됨",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = BoardRequest.class)))
+    public ResponseEntity<BoardEntity> updateBoard(@PathVariable Long id,
+                                                   @RequestBody BoardRequest payload) {
+        BoardEntity board = payload.toEntity(categoryService);
+        board.setId(id);
+        BoardEntity updatedBoard = boardService.update(board);
+        return ResponseEntity.status(HttpStatus.OK).body(updatedBoard);
+    }
+    // ==============================
+
+    // GET /api/v1/board/{id}
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[board-3] 게시판 상세 조회",
             description = "특정 게시글의 상세 정보를 조회합니다.",

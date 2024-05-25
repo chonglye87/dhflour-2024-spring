@@ -10,7 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -49,5 +51,24 @@ public class ProcessEnvController {
     @GetMapping("/api/v1/time-check")
     public ResponseEntity<?> time() {
         return ResponseEntity.ok(timeCheckService.getTimeInfo());
+    }
+
+    private static List<byte[]> memoryHog = new ArrayList<>();
+
+    @GetMapping("/api/v1/memory-load")
+    public ResponseEntity<?> memoryLoad() {
+        memoryHog.add(new byte[10 * 1024 * 1024]); // 약 10MB 메모리 추가
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/api/v1/memory-load-size")
+    public ResponseEntity<?> memoryLoadSize() {
+        return ResponseEntity.ok(memoryHog.size());
+    }
+
+    @GetMapping("/api/v1/memory-load-clear")
+    public ResponseEntity<?> memoryLoadClear() {
+        memoryHog.clear();
+        return ResponseEntity.ok().build();
     }
 }

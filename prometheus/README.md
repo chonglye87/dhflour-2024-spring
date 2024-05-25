@@ -1,4 +1,5 @@
 ## 도커로 Prometheus 설치 방법
+- prometheus.yml 가 존재하는 경로에서 아래 명령으로 실행
 - docker run --name prometheus -p 9090:9090 -v $(pwd)/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
 
 ## 도커로 Grafana 설치 방법

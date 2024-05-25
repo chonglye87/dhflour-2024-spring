@@ -34,6 +34,10 @@ public class BoardServiceImpl implements BoardService {
     @Override
     @Transactional // 쓰기 전용 트랙젝션
     public BoardEntity create(BoardEntity entity) {
+        log.debug("entity : {}", entity);
+        if (entity.getCategories() != null) {
+            log.debug("entity.getCategories() : {}", entity.getCategories());
+        }
         // Validation 처리
         return boardEntityRepository.save(entity);
     }

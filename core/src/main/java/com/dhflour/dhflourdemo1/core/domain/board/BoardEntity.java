@@ -23,7 +23,7 @@ public class BoardEntity {
     @Schema(description = "id", example = "1", readOnly = true, requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
-    @Column(nullable = false, length = 255)
+    @Column(nullable = false, length = 100)
     @Schema(description = "게시물 제목", example = "", readOnly = true)
     private String title;
 

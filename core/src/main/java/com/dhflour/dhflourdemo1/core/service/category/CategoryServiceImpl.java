@@ -82,6 +82,6 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<CategoryEntity> listByIds(List<Long> ids) {
-        return categoryEntityRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+        return categoryEntityRepository.findAllByIdIn(ids);
     }
 }
