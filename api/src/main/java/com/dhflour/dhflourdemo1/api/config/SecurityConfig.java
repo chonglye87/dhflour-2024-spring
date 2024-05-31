@@ -33,6 +33,7 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/v1/board/**").permitAll() // `/api/**` 경로에 대한 모든 요청을 허용합니다.
+                        .requestMatchers("/api/v1/user/**").permitAll() // `/api/**` 경로에 대한 모든 요청을 허용합니다.
                         .requestMatchers("/api/v1/category/**").permitAll() // `/api/**` 경로에 대한 모든 요청을 허용합니다.
                         .requestMatchers("/api/v1/authenticate").permitAll() // 로그인
                         .requestMatchers("/actuator/**").permitAll()
