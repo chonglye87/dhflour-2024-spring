@@ -1,7 +1,6 @@
 package com.dhflour.dhflourdemo1.core.service.jwt;
 
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
-import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 
 /**

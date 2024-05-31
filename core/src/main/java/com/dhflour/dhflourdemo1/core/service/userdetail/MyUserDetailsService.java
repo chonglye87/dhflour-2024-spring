@@ -1,6 +1,5 @@
 package com.dhflour.dhflourdemo1.core.service.userdetail;
 
-import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntityRepository;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

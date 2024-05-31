@@ -2,7 +2,6 @@ package com.dhflour.dhflourdemo1.api.dataloader;
 
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntityRepository;
-import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
 import com.dhflour.dhflourdemo1.core.service.board.BoardService;
 import com.dhflour.dhflourdemo1.core.service.category.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-
-import java.util.Locale;
-import java.util.Set;
 
 @Slf4j
 @Component

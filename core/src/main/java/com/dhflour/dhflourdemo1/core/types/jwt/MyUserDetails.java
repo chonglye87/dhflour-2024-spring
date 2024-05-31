@@ -1,9 +1,7 @@
 package com.dhflour.dhflourdemo1.core.types.jwt;
 
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.GrantedAuthority;
