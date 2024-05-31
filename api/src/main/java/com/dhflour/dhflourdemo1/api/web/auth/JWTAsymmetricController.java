@@ -1,16 +1,21 @@
-package com.dhflour.dhflourdemo1.api.web;
+package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.api.service.jwt.JWTAsymmetricService;
-import com.dhflour.dhflourdemo1.api.service.jwt.JWTSymmetricService;
+import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
+import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 // 비대칭키용 JWT
 @RestController
@@ -28,7 +33,12 @@ public class JWTAsymmetricController {
 
     @PostMapping("/access-token")
     public ResponseEntity<?> accessToken(@RequestBody UserSampleBody requestBody) {
-        return ResponseEntity.ok(jwtService.generateToken(requestBody));
+        UserEntity user = new UserEntity();
+        user.setId(requestBody.getId());
+        user.setUsername(requestBody.getUsername());
+        Set<GrantedAuthority> authorities = new LinkedHashSet<>();
+        authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        return ResponseEntity.ok(jwtService.generateToken(new MyUserDetails(user, true, true, true, true, authorities)));
     }
 
     @Parameter(in = ParameterIn.HEADER, name = "Access-Token", description = "Access Token for authentication", required = true, schema = @Schema(implementation = String.class))

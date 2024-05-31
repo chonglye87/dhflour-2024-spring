@@ -1,8 +1,6 @@
-package com.dhflour.dhflourdemo1.api.service.jwt;
+package com.dhflour.dhflourdemo1.core.service.jwt;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -17,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
+import java.util.function.Function;
 
 /**
  * 비대칭키 알고리즘 (Asymmetric Key Algorithms)
@@ -48,7 +47,7 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     }
 
     @Override
-    public String generateToken(UserSampleBody user) {
+    public String generateToken(MyUserDetails user) {
         try {
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
@@ -57,11 +56,11 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
             return Jwts.builder()
                     .setId(String.valueOf(user.getId())) // 토큰 ID 설정
                     .claim("username", user.getUsername()) // 사용자명 클레임 설정
-                    .setIssuer("issuer") // 발행자 설정
-                    .setSubject("subject") // 주제 설정
-                    .setIssuedAt(now) // 발행 시간 설정
-                    .setExpiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
-                    .setNotBefore(now) // 유효 시작 시간 설정
+                    .issuer("issuer") // 발행자 설정
+                    .subject("subject") // 주제 설정
+                    .issuedAt(now) // 발행 시간 설정
+                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .notBefore(now) // 유효 시작 시간 설정
                     .signWith(privateKey, signatureAlgorithm) // 서명 알고리즘과 개인 키 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
@@ -82,5 +81,25 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
             log.error("Invalid public key", e);
             throw new RuntimeException("Failed to verify token", e);
         }
+    }
+
+
+    @Override
+    public String extractSubject(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    @Override
+    public Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = verifyToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }

@@ -1,5 +1,6 @@
-package com.dhflour.dhflourdemo1.api.service.jwt;
+package com.dhflour.dhflourdemo1.core.service.jwt;
 
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -8,13 +9,15 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
-import java.security.PrivateKey;
 import java.util.Base64;
 import java.util.Date;
+import java.util.function.Function;
+
 
 /**
  * 대칭키 알고리즘 (Symmetric Key Algorithms)
@@ -45,7 +48,7 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
             // 인코딩된 비밀 키 출력
             SECRET_KEY = encodedKey;
-            log.debug("Base64 Encoded Secret Key: " + SECRET_KEY);
+            log.debug("JWT Symmetric Secret Key: " + SECRET_KEY);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -53,7 +56,7 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
     // ES256 (ECDSA with P-256 and SHA-256)
     @Override
-    public String generateToken(UserSampleBody user) {
+    public String generateToken(MyUserDetails user) {
         try {
             // Base64 인코딩된 키를 디코딩하여 SecretKey 생성
             SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
@@ -64,13 +67,13 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
             // JWT 생성
             return Jwts.builder()
-                    .setId(String.valueOf(user.getId())) // 토큰 ID 설정
+                    .id(String.valueOf(user.getId())) // 토큰 ID 설정
                     .claim("username", user.getUsername()) // 사용자명 클레임 설정
-                    .setIssuer("issuer") // 발행자 설정
-                    .setSubject("subject") // 주제 설정
-                    .setIssuedAt(now) // 발행 시간 설정
-                    .setExpiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
-                    .setNotBefore(now) // 유효 시작 시간 설정
+                    .issuer("issuer") // 발행자 설정
+                    .subject(user.getEmail()) // 주제 설정
+                    .issuedAt(now) // 발행 시간 설정
+                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .notBefore(now) // 유효 시작 시간 설정
                     .signWith(secretKey, SIGNATURE_ALGORITHM) // 서명 알고리즘과 SecretKey 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
@@ -80,10 +83,30 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
     @Override
     public Claims verifyToken(String jwtToken) {
+        log.debug("JWT Token: {}", jwtToken);
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
         Jws<Claims> claimsJws = Jwts.parser().verifyWith(secretKey).build()
                 .parseSignedClaims(jwtToken);
 
         return claimsJws.getPayload();
+    }
+
+    @Override
+    public String extractSubject(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    @Override
+    public Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = verifyToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }
