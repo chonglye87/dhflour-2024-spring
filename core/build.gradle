@@ -5,6 +5,7 @@ plugins {
 dependencies {
     implementation 'mysql:mysql-connector-java:8.0.33'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     // 여기에 필요한 의존성 추가
 }
 

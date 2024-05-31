@@ -1,5 +1,6 @@
-package com.dhflour.dhflourdemo1.api.service.jwt;
+package com.dhflour.dhflourdemo1.core.service.jwt;
 
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 
@@ -10,7 +11,11 @@ public interface JWTAsymmetricService {
 
     void createSecretKey();
 
-    String generateToken(UserSampleBody user);
+    String generateToken(MyUserDetails user);
 
     Claims verifyToken(String jwtToken);
+
+    String extractSubject(String token);
+
+    Boolean isTokenExpired(String token);
 }

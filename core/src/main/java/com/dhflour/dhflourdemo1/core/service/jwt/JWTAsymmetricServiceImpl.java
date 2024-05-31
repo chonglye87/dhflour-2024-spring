@@ -1,5 +1,6 @@
-package com.dhflour.dhflourdemo1.api.service.jwt;
+package com.dhflour.dhflourdemo1.core.service.jwt;
 
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -14,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Date;
+import java.util.function.Function;
 
 /**
  * 비대칭키 알고리즘 (Asymmetric Key Algorithms)
@@ -46,7 +48,7 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     }
 
     @Override
-    public String generateToken(UserSampleBody user) {
+    public String generateToken(MyUserDetails user) {
         try {
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
@@ -80,5 +82,25 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
             log.error("Invalid public key", e);
             throw new RuntimeException("Failed to verify token", e);
         }
+    }
+
+
+    @Override
+    public String extractSubject(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    @Override
+    public Boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date());
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = verifyToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    public Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
     }
 }
