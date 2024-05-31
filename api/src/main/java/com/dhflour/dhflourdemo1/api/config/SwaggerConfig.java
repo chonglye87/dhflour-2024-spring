@@ -17,7 +17,6 @@ public class SwaggerConfig {
                 .info(new Info().title("API 문서")
                         .description("대한제분 API, powered by Spring Boot 3")
                         .version("v1.0.0"))
-//                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
                 .components(new Components().addSecuritySchemes("bearerAuth",
                         new SecurityScheme().name("bearerAuth").type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT")));
     }
