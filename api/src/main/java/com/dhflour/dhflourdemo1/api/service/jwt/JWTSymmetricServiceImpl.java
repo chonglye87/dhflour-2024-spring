@@ -64,13 +64,13 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
             // JWT 생성
             return Jwts.builder()
-                    .setId(String.valueOf(user.getId())) // 토큰 ID 설정
+                    .id(String.valueOf(user.getId())) // 토큰 ID 설정
                     .claim("username", user.getUsername()) // 사용자명 클레임 설정
-                    .setIssuer("issuer") // 발행자 설정
-                    .setSubject("subject") // 주제 설정
-                    .setIssuedAt(now) // 발행 시간 설정
-                    .setExpiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
-                    .setNotBefore(now) // 유효 시작 시간 설정
+                    .issuer("issuer") // 발행자 설정
+                    .subject("subject") // 주제 설정
+                    .issuedAt(now) // 발행 시간 설정
+                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .notBefore(now) // 유효 시작 시간 설정
                     .signWith(secretKey, SIGNATURE_ALGORITHM) // 서명 알고리즘과 SecretKey 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
@@ -81,7 +81,8 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Override
     public Claims verifyToken(String jwtToken) {
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
-        Jws<Claims> claimsJws = Jwts.parser().verifyWith(secretKey).build()
+        Jws<Claims> claimsJws = Jwts.parser()
+                .verifyWith(secretKey).build()
                 .parseSignedClaims(jwtToken);
 
         return claimsJws.getPayload();

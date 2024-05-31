@@ -1,14 +1,11 @@
 package com.dhflour.dhflourdemo1.api.service.jwt;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.InvalidKeyException;
+import io.jsonwebtoken.security.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +23,8 @@ import java.util.Date;
 @Service
 public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
 
-    private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
+    private static final SignatureAlgorithm signatureAlgorithm = Jwts.SIG.RS256;
+//    private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
 
     private static PrivateKey privateKey;
     private static PublicKey publicKey;
@@ -35,8 +33,8 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     @Override
     public void createSecretKey() {
         try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(signatureAlgorithm.getFamilyName());
-            keyPairGenerator.initialize(signatureAlgorithm.getMinKeyLength()); // 2048 비트 키 크기
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048); // 2048 비트 키 크기
             KeyPair keyPair = keyPairGenerator.genKeyPair();
             privateKey = keyPair.getPrivate();
             publicKey = keyPair.getPublic();
@@ -55,13 +53,13 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
 
             // JWT 생성
             return Jwts.builder()
-                    .setId(String.valueOf(user.getId())) // 토큰 ID 설정
+                    .id(String.valueOf(user.getId())) // 토큰 ID 설정
                     .claim("username", user.getUsername()) // 사용자명 클레임 설정
-                    .setIssuer("issuer") // 발행자 설정
-                    .setSubject("subject") // 주제 설정
-                    .setIssuedAt(now) // 발행 시간 설정
-                    .setExpiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
-                    .setNotBefore(now) // 유효 시작 시간 설정
+                    .issuer("issuer") // 발행자 설정
+                    .subject("subject") // 주제 설정
+                    .issuedAt(now) // 발행 시간 설정
+                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .notBefore(now) // 유효 시작 시간 설정
                     .signWith(privateKey, signatureAlgorithm) // 서명 알고리즘과 개인 키 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
@@ -73,11 +71,11 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     public Claims verifyToken(String jwtToken) {
         try {
             Jws<Claims> claimsJws = Jwts.parser()
-                    .setSigningKey(publicKey)
+                    .verifyWith(publicKey)
                     .build()
-                    .parseClaimsJws(jwtToken);
+                    .parseSignedClaims(jwtToken);
 
-            return claimsJws.getBody();
+            return claimsJws.getPayload();
         } catch (InvalidKeyException e) {
             log.error("Invalid public key", e);
             throw new RuntimeException("Failed to verify token", e);
