@@ -3,6 +3,7 @@ package com.dhflour.dhflourdemo1.api.web.auth;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.service.user.UserService;
 import com.dhflour.dhflourdemo1.core.service.userdetail.MyUserDetailsService;
+import com.dhflour.dhflourdemo1.core.types.error.ErrorResponse;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationResponse;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
@@ -13,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,11 +50,12 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "JWT 발행함",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = AuthenticationResponse.class)))
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         } catch (Exception e) {
-            throw new Exception("Incorrect username or password", e);
+            // ID / PW
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ErrorResponse.builder().message("ID/PW를 다시 확인해주세요.").build());
         }
 
         final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());

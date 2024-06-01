@@ -35,7 +35,7 @@ public class UserController {
     private MyUserDetailsService userDetailsService;
 
     // 회원가입
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/join", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[user-1] 회원가입",
             description = "유저정보를 등록합니다.",
             operationId = "joinUser")
@@ -43,8 +43,7 @@ public class UserController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = AuthenticationResponse.class)))
     public ResponseEntity<AuthenticationResponse> join(@RequestBody JoinRequest request) {
-        UserEntity userEntity = request.toEntity();
-        UserEntity createdUser = userService.create(userEntity);
+        UserEntity createdUser = userService.create(request.toEntity());
 
         final MyUserDetails userDetails = userDetailsService.loadUserByUsername(createdUser.getEmail());
         final String jwt = jwtService.generateToken(userDetails);
@@ -52,9 +51,9 @@ public class UserController {
     }
 
     // TODO 과제
-    // TODO 페이지네이션 API GET /
-    // TODO 상세보기 API GET /{id}
-    // TODO 등록하기 API POST /
-    // TODO 수정하기 API PUT /
-    // TODO 삭제하기 API DELETE /
+    // TODO 페이지네이션 API GET /api/v1/user
+    // TODO 상세보기 API GET /api/v1/user/{id}
+    // TODO 등록하기 API POST /api/v1/user
+    // TODO 수정하기 API PUT /api/v1/user
+    // TODO 삭제하기 API DELETE /api/v1/user/{id}
 }
