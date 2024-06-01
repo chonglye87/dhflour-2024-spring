@@ -48,22 +48,18 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "JWT 발행함",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = AuthenticationResponse.class)))
-    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
         } catch (Exception e) {
             throw new Exception("Incorrect username or password", e);
         }
-        try {
-            final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-            final String jwt = jwtService.generateToken(userDetails);
-            AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);
-            authenticationResponse.setUser(userService.get(Locale.KOREA, userDetails.getId()));
-            return ResponseEntity.ok(authenticationResponse);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-        return ResponseEntity.badRequest().build();
+
+        final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        final String jwt = jwtService.generateToken(userDetails);
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);
+        authenticationResponse.setUser(userService.get(Locale.KOREA, userDetails.getId()));
+        return ResponseEntity.ok(authenticationResponse);
 
     }
 
