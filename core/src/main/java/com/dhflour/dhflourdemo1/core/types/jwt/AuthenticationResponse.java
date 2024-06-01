@@ -16,8 +16,9 @@ public class AuthenticationResponse implements Serializable {
     @Schema(description = "User")
     private UserEntity user;
 
-    public AuthenticationResponse(String jwt) {
+    public AuthenticationResponse(String jwt, UserEntity user) {
         this.accessToken = jwt;
+        this.user = user;
     }
 
 }

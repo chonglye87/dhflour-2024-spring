@@ -57,9 +57,7 @@ public class AuthController {
 
         final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         final String jwt = jwtService.generateToken(userDetails);
-        AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);
-        authenticationResponse.setUser(userService.get(Locale.KOREA, userDetails.getId()));
-        return ResponseEntity.ok(authenticationResponse);
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, userService.get(Locale.KOREA, userDetails.getId())));
 
     }
 
