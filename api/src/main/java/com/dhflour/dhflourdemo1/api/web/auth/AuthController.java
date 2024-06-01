@@ -1,5 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
+import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.service.user.UserService;
 import com.dhflour.dhflourdemo1.core.service.userdetail.MyUserDetailsService;
@@ -64,18 +65,15 @@ public class AuthController {
 
     }
 
-    @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "인증된 사용자 정보 조회",
             description = "JWT를 통해 인증된 사용자 정보를 조회합니다.",
             operationId = "getAuthenticatedUserInfo",
             security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "인증된 사용자 정보 조회 성공",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = MyUserDetails.class)))
-    public ResponseEntity<Map> getAuthenticatedUserInfo(@AuthenticationPrincipal MyUserDetails userDetails) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", userDetails.getId());
-        response.put("email", userDetails.getEmail());
-        return ResponseEntity.ok(response);
+                    schema = @Schema(implementation = UserEntity.class)))
+    public ResponseEntity<?> getAuthenticatedUserInfo(@AuthenticationPrincipal MyUserDetails userDetails) {
+        return ResponseEntity.ok(userService.get(Locale.KOREA, userDetails.getId()));
     }
 }
