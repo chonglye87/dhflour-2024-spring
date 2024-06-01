@@ -40,7 +40,7 @@ public class UserController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = UserEntity.class)))
     public ResponseEntity<UserEntity> join(@RequestBody JoinRequest request) {
-        UserEntity userEntity = request.toEntity(passwordEncoder);
+        UserEntity userEntity = request.toEntity();
         UserEntity createdUser = userService.create(userEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }

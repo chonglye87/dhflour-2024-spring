@@ -30,7 +30,7 @@ public class JoinRequest {
     @Schema(description = "약관", required = true)
     private UserAgreementEmbedded agreement;
 
-    public UserEntity toEntity(PasswordEncoder passwordEncoder) {
+    public UserEntity toEntity() {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setEmail(email);

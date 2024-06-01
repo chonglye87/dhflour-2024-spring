@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
+import com.dhflour.dhflourdemo1.core.service.user.UserService;
 import com.dhflour.dhflourdemo1.core.service.userdetail.MyUserDetailsService;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationResponse;
@@ -20,6 +21,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -35,6 +37,9 @@ public class AuthController {
 
     @Autowired
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[auth-1] JWT 발행",
@@ -52,7 +57,9 @@ public class AuthController {
         try {
             final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
             final String jwt = jwtService.generateToken(userDetails);
-            return ResponseEntity.ok(new AuthenticationResponse(jwt));
+            AuthenticationResponse authenticationResponse = new AuthenticationResponse(jwt);
+            authenticationResponse.setUser(userService.get(Locale.KOREA, userDetails.getId()));
+            return ResponseEntity.ok(authenticationResponse);
         } catch (Exception e){
             e.printStackTrace();
         }
