@@ -34,7 +34,7 @@ public class JoinRequest {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(username);
         userEntity.setEmail(email);
-        userEntity.setPassword(passwordEncoder.encode(this.password));
+        userEntity.setPassword(this.password);
         userEntity.setUserAgreement(this.agreement);
         userEntity.setMobile(this.mobile);
         userEntity.setUserAgreement(this.agreement);

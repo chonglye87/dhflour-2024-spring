@@ -23,7 +23,6 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public MyUserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        log.debug("Loading user by email {}", email);
         return userRepository.findOneByEmail(email).map(user -> {
 
                     boolean enabled = true;
@@ -33,13 +32,15 @@ public class MyUserDetailsService implements UserDetailsService {
                     Set<GrantedAuthority> authorities = new LinkedHashSet<>();
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-                    return new MyUserDetails(
+                    MyUserDetails userDetails =  new MyUserDetails(
                             user,
                             enabled,
                             accountNonExpired,
                             credentialsNonExpired,
                             accountNonLocked,
                             authorities);
+
+                    return userDetails;
                 })
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-
     @Autowired
     private UserService userService;
 
@@ -39,9 +38,10 @@ public class UserController {
             operationId = "joinUser")
     @ApiResponse(responseCode = "201", description = "회원가입을 성공적으로 등록됨",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = JoinRequest.class)))
+                    schema = @Schema(implementation = UserEntity.class)))
     public ResponseEntity<UserEntity> join(@RequestBody JoinRequest request) {
-        UserEntity createdUser = userService.create(request.toEntity(passwordEncoder));
+        UserEntity userEntity = request.toEntity(passwordEncoder);
+        UserEntity createdUser = userService.create(userEntity);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 

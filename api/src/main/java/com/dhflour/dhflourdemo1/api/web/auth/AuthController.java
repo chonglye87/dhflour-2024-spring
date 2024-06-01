@@ -49,9 +49,15 @@ public class AuthController {
         } catch (Exception e) {
             throw new Exception("Incorrect username or password", e);
         }
-        final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        final String jwt = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        try {
+            final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+            final String jwt = jwtService.generateToken(userDetails);
+            return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
+
     }
 
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -63,7 +69,6 @@ public class AuthController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = MyUserDetails.class)))
     public ResponseEntity<Map> getAuthenticatedUserInfo(@AuthenticationPrincipal MyUserDetails userDetails) {
-        log.info("getAuthenticatedUserInfo: {}", userDetails);
         Map<String, Object> response = new HashMap<>();
         response.put("id", userDetails.getId());
         response.put("email", userDetails.getEmail());

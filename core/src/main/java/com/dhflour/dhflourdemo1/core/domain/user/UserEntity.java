@@ -21,8 +21,8 @@ public class UserEntity extends AbstractEntity<Long> {
     @Schema(description = "id", example = "1", readOnly = true, requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
 
-    @Column(nullable = false, length = 255)
-    @Schema(description = "계정", example = "홍사남", readOnly = true)
+    @Column(nullable = false, length = 20)
+    @Schema(description = "이름", example = "홍사남", readOnly = true)
     private String username;
 
     @Column(nullable = false, length = 12)

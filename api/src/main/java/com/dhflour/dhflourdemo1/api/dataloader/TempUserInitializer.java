@@ -1,6 +1,5 @@
 package com.dhflour.dhflourdemo1.api.dataloader;
 
-
 import com.dhflour.dhflourdemo1.core.domain.user.UserAgreementEmbedded;
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
@@ -15,7 +14,6 @@ import java.util.Locale;
 @Component
 public class TempUserInitializer implements CommandLineRunner {
 
-
     @Autowired
     private UserService userService;
 
@@ -24,8 +22,6 @@ public class TempUserInitializer implements CommandLineRunner {
 
     @Autowired
     private JWTAsymmetricService jwtAsymmetricService;
-
-
 
     @Override
     public void run(String... args) throws Exception {

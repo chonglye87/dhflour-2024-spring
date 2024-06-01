@@ -50,7 +50,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 e.printStackTrace();
             }
         }
-
         // 사용자 이름이 있고, 인증이 되어 있지 않은 경우
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             MyUserDetails userDetails = (MyUserDetails) this.userDetailsService.loadUserByUsername(username); // 사용자 정보를 로드
