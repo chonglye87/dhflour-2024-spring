@@ -25,6 +25,10 @@ public class UserEntity extends AbstractEntity<Long> {
     @Schema(description = "계정", example = "홍사남", readOnly = true)
     private String username;
 
+    @Column(nullable = false, length = 12)
+    @Schema(description = "휴대폰번호", example = "01011112222", readOnly = true)
+    private String mobile;
+
     @Column(nullable = false, length = 255, unique = true)
     @Schema(description = "이메일", example = "chonglye@aartkorea.com", readOnly = true)
     private String email;

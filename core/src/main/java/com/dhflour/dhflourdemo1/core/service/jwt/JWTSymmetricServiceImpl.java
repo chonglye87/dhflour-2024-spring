@@ -84,7 +84,8 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
         log.debug("JWT Token: {}", jwtToken);
         SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
         Jws<Claims> claimsJws = Jwts.parser()
-                .verifyWith(secretKey).build()
+                .verifyWith(secretKey)
+                .build()
                 .parseSignedClaims(jwtToken);
 
         return claimsJws.getPayload();
