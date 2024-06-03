@@ -29,7 +29,7 @@ import java.util.Locale;
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
-    
+
 
     @Autowired
     private CategoryService categoryService;
@@ -85,7 +85,7 @@ public class CategoryController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = CategoryEntity.class)))
     public ResponseEntity<CategoryEntity> getCategoryById(@PathVariable Long id,
-                                                    Locale locale) {
+                                                          Locale locale) {
         CategoryEntity board = categoryService.get(locale, id);
         return board != null ? ResponseEntity.ok(board) : ResponseEntity.notFound().build();
     }
@@ -96,7 +96,7 @@ public class CategoryController {
             operationId = "deleteCategory")
     @ApiResponse(responseCode = "204", description = "게시글이 성공적으로 삭제됨")
     public ResponseEntity<?> deleteCategory(@PathVariable Long id,
-                                         Locale locale) {
+                                            Locale locale) {
         CategoryEntity board = categoryService.get(locale, id);
         if (board != null) {
             categoryService.delete(board);

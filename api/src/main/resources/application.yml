@@ -19,4 +19,5 @@ spring:
       - classpath:application-prometheus.properties
       - classpath:application-apidoc.properties
       - classpath:application-logger.properties
+      - classpath:application-jwt.yml
 

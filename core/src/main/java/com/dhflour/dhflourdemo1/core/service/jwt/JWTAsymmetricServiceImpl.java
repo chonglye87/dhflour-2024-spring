@@ -6,13 +6,15 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.InvalidKeyException;
 import io.jsonwebtoken.security.SignatureAlgorithm;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -24,21 +26,54 @@ import java.util.function.Function;
 @Service
 public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
 
-    private static final SignatureAlgorithm signatureAlgorithm = Jwts.SIG.RS256;
-//    private static final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.RS256;
+    @Value("${jwt.expiration}")
+    private long expiration;
 
-    private static PrivateKey privateKey;
-    private static PublicKey publicKey;
+    @Value("${jwt.asymmetric.privateKey}")
+    private String privateKey;
+
+    @Value("${jwt.asymmetric.publicKey}")
+    private String publicKey;
+
+    @Value("${jwt.asymmetric.algorithm}")
+    private int algorithm;
+
+    private SignatureAlgorithm SIGNATURE_ALGORITHM = Jwts.SIG.RS256;
+    private int keySize  = 2048;
+
+    @PostConstruct
+    public void init() {
+        switch (algorithm) {
+            case 256:
+                SIGNATURE_ALGORITHM = Jwts.SIG.RS256;
+                keySize = 2048;
+                break;
+            case 384:
+                SIGNATURE_ALGORITHM = Jwts.SIG.RS384;
+                keySize = 3072;
+                break;
+            case 512:
+                SIGNATURE_ALGORITHM = Jwts.SIG.RS512;
+                keySize = 4096;
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported algorithm: " + algorithm);
+        }
+        log.debug("Algorithm set to: {}, Key size set to: {}", SIGNATURE_ALGORITHM, keySize);
+    }
+
 
 
     @Override
     public void createSecretKey() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048); // 2048 비트 키 크기
+            keyPairGenerator.initialize(keySize); // 2048 비트 키 크기
             KeyPair keyPair = keyPairGenerator.genKeyPair();
-            privateKey = keyPair.getPrivate();
-            publicKey = keyPair.getPublic();
+
+            String privateKey = Base64.getEncoder().encodeToString(keyPair.getPrivate().getEncoded());
+            String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+
             log.debug("privateKey : {}", privateKey);
             log.debug("publicKey : {}", publicKey);
         } catch (Exception e) {
@@ -51,6 +86,10 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
         try {
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
+            byte[] privateKeyBytes = Base64.getDecoder().decode(privateKey);
+            PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PrivateKey decodedPrivateKey = keyFactory.generatePrivate(privateKeySpec);
 
             // JWT 생성
             return Jwts.builder()
@@ -59,9 +98,9 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
                     .issuer("issuer") // 발행자 설정
                     .subject("subject") // 주제 설정
                     .issuedAt(now) // 발행 시간 설정
-                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .expiration(new Date(nowMillis + expiration)) // 만료 시간 설정 (1시간 후)
                     .notBefore(now) // 유효 시작 시간 설정
-                    .signWith(privateKey, signatureAlgorithm) // 서명 알고리즘과 개인 키 설정
+                    .signWith(decodedPrivateKey, SIGNATURE_ALGORITHM) // 서명 알고리즘과 개인 키 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate token", e);
@@ -71,13 +110,19 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     @Override
     public Claims verifyToken(String jwtToken) {
         try {
+
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
+            X509EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            PublicKey decodedPublicKey = keyFactory.generatePublic(publicKeySpec);
+
             Jws<Claims> claimsJws = Jwts.parser()
-                    .verifyWith(publicKey)
+                    .verifyWith(decodedPublicKey)
                     .build()
                     .parseSignedClaims(jwtToken);
 
             return claimsJws.getPayload();
-        } catch (InvalidKeyException e) {
+        } catch (Exception e) {
             log.error("Invalid public key", e);
             throw new RuntimeException("Failed to verify token", e);
         }

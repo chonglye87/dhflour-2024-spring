@@ -7,7 +7,10 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.MacAlgorithm;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.KeyGenerator;
@@ -28,15 +31,43 @@ import java.util.function.Function;
 @Service
 public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
-    private static String SECRET_KEY;
+    @Value("${jwt.expiration}")
+    private long expiration;
+
+    @Value("${jwt.symmetric.secretKey}")
+    private String secretKey;
+
+    @Value("${jwt.symmetric.algorithm}")
+    private int algorithm;
+
     // HMAC-SHA-512 알고리즘 유형
-    private static final SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS256;
+    private MacAlgorithm SIGNATURE_ALGORITHM = Jwts.SIG.HS256;
+
+    @PostConstruct
+    public void init() {
+        switch (algorithm) {
+            case 256:
+                SIGNATURE_ALGORITHM = Jwts.SIG.HS256;
+                break;
+            case 384:
+                SIGNATURE_ALGORITHM = Jwts.SIG.HS384;
+                break;
+            case 512:
+                SIGNATURE_ALGORITHM = Jwts.SIG.HS512;
+                break;
+            default:
+                throw new IllegalArgumentException("Unsupported algorithm: " + algorithm);
+        }
+        log.debug("Algorithm set to: {}", SIGNATURE_ALGORITHM);
+    }
 
     @Override
     public void createSecretKey() {
         try {
-            KeyGenerator keyGen = KeyGenerator.getInstance(SIGNATURE_ALGORITHM.getJcaName());
-            keyGen.init(SIGNATURE_ALGORITHM.getMinKeyLength()); // 키 크기 설정
+
+            final String algorithm = String.format("HmacSHA%s", SIGNATURE_ALGORITHM.getKeyBitLength());
+            KeyGenerator keyGen = KeyGenerator.getInstance(algorithm); // "HmacSHA256"
+            keyGen.init(SIGNATURE_ALGORITHM.getKeyBitLength()); // 키 크기 설정 256
 
             // 비밀 키 생성
             SecretKey secretKey = keyGen.generateKey();
@@ -45,8 +76,7 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
             String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
             // 인코딩된 비밀 키 출력
-            SECRET_KEY = encodedKey;
-            log.debug("JWT Symmetric Secret Key: " + SECRET_KEY);
+            log.debug("JWT Symmetric Secret Key: " + encodedKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -56,9 +86,6 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Override
     public String generateToken(MyUserDetails user) {
         try {
-            // Base64 인코딩된 키를 디코딩하여 SecretKey 생성
-            SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
-
             // 현재 시간 설정
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
@@ -70,9 +97,9 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
                     .issuer("issuer") // 발행자 설정
                     .subject(user.getEmail()) // 주제 설정
                     .issuedAt(now) // 발행 시간 설정
-                    .expiration(new Date(nowMillis + 3600000)) // 만료 시간 설정 (1시간 후)
+                    .expiration(new Date(nowMillis + expiration)) // 만료 시간 설정 (1시간 후)
                     .notBefore(now) // 유효 시작 시간 설정
-                    .signWith(secretKey, SIGNATURE_ALGORITHM) // 서명 알고리즘과 SecretKey 설정
+                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)), SIGNATURE_ALGORITHM) // 서명 알고리즘과 SecretKey 설정
                     .compact(); // 토큰 생성 및 컴팩트화
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate token", e);
@@ -82,9 +109,8 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Override
     public Claims verifyToken(String jwtToken) {
         log.debug("JWT Token: {}", jwtToken);
-        SecretKey secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(SECRET_KEY));
         Jws<Claims> claimsJws = Jwts.parser()
-                .verifyWith(secretKey)
+                .verifyWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)))
                 .build()
                 .parseSignedClaims(jwtToken);
 
