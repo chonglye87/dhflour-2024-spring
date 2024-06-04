@@ -1,2 +1,2 @@
 rootProject.name = 'dhflour-demo-1'
-include 'api', 'batch', 'core'
+include 'api', 'batch', 'jpa', 'core'

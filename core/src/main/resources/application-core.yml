@@ -1,9 +1,7 @@
-# 공통 환경 설정
 spring:
   config:
     import:
       - classpath:application-mail.yml
-      - classpath:application-jpa.properties
 
 # 로컬 환경 설정
 ---
@@ -12,8 +10,6 @@ spring:
   config:
     activate:
       on-profile: local
-    import:
-      - classpath:application-db-local.properties
 process.env: local
 
 # 개발계 환경 설정
@@ -23,8 +19,6 @@ spring:
   config:
     activate:
       on-profile: dev
-    import:
-      - classpath:application-db-dev.properties
 process.env: development
 
 # 운영계 환경 설정
@@ -34,6 +28,4 @@ spring:
   config:
     activate:
       on-profile: prod
-    import:
-      - classpath:application-db-prod.properties
 process.env: production

@@ -3,7 +3,6 @@ package com.dhflour.dhflourdemo1.api.web;
 import com.dhflour.dhflourdemo1.api.service.TestAPIService;
 import com.dhflour.dhflourdemo1.core.service.TestService;
 import com.dhflour.dhflourdemo1.core.service.mail.MailService;
-import com.dhflour.dhflourdemo1.core.service.setting.timecheck.TimeCheckService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -33,8 +32,6 @@ public class ProcessEnvController {
     @Autowired
     private MailService mailService;
 
-    @Autowired
-    private TimeCheckService timeCheckService;
 
     @GetMapping("/api/v1/env")
     public ResponseEntity<?> env() {
@@ -46,11 +43,6 @@ public class ProcessEnvController {
         result.put("mail", mailService.getText());
         result.put("prometheusEnv", prometheusEnv);
         return ResponseEntity.ok(result);
-    }
-
-    @GetMapping("/api/v1/time-check")
-    public ResponseEntity<?> time() {
-        return ResponseEntity.ok(timeCheckService.getTimeInfo());
     }
 
     private static List<byte[]> memoryHog = new ArrayList<>();

@@ -1,0 +1,42 @@
+# 공통 환경 설정
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+#  config:
+#    import:
+
+
+# 로컬 환경 설정
+---
+
+spring:
+  config:
+    activate:
+      on-profile: local
+    import:
+      - classpath:application-db-local.properties
+
+# 개발계 환경 설정
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+    import:
+      - classpath:application-db-dev.properties
+
+# 운영계 환경 설정
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+    import:
+      - classpath:application-db-prod.properties

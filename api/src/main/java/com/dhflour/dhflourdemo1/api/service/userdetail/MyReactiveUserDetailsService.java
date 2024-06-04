@@ -1,7 +1,7 @@
 package com.dhflour.dhflourdemo1.api.service.userdetail;
 
-import com.dhflour.dhflourdemo1.core.reactive.user.ReactiveUserRepository;
-import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
+import com.dhflour.dhflourdemo1.api.repository.user.ReactiveUserRepository;
+import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -30,7 +30,7 @@ public class MyReactiveUserDetailsService implements ReactiveUserDetailsService 
                     Set<GrantedAuthority> authorities = new LinkedHashSet<>();
                     authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-                    MyUserDetails userDetails =  new MyUserDetails(
+                    ReactiveUserDetails userDetails =  new ReactiveUserDetails(
                             user,
                             enabled,
                             accountNonExpired,

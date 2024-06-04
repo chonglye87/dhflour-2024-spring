@@ -1,9 +1,9 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.core.reactive.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.repository.user.ReactiveUser;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
-import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
-import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
+import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
+import com.dhflour.dhflourdemo1.api.types.jwt.UserSampleBody;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -39,7 +39,7 @@ public class JWTSymmetricController {
         user.setUsername(requestBody.getUsername());
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        return ResponseEntity.ok(jwtService.generateToken(new MyUserDetails(user, true, true, true, true, authorities)));
+        return ResponseEntity.ok(jwtService.generateToken(new ReactiveUserDetails(user, true, true, true, true, authorities).toMyUserDetails()));
     }
 
     @Parameter(in = ParameterIn.HEADER, name = "Access-Token", description = "Access Token for authentication", required = true, schema = @Schema(implementation = String.class))
