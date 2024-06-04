@@ -2,10 +2,8 @@ package com.dhflour.dhflourdemo1.core.types.error;
 
 public class BadRequestException extends RuntimeException {
 
-    private static final long serialVersionUID = 8087908946312578899L;
-
     public BadRequestException() {
-        super("잘못된 요청입니다.");
+        super("잘못된 요청입니다. 요청 구문, 매개변수 등이 잘못되었습니다.");
     }
 
     public BadRequestException(String message) {

@@ -22,7 +22,7 @@ public class UserEntity extends AbstractEntity<Long> {
     private Long id;
 
     @Column(nullable = false, length = 20)
-    @Schema(description = "이름", example = "홍사남", readOnly = true)
+    @Schema(description = "이름", example = "홍길동", readOnly = true)
     private String username;
 
     @Column(nullable = false, length = 12)

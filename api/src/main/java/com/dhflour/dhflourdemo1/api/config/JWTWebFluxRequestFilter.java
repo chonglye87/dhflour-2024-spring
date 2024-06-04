@@ -1,14 +1,15 @@
 package com.dhflour.dhflourdemo1.api.config;
 
 import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
-import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
+import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
+import com.dhflour.dhflourdemo1.core.types.error.UnauthorizedException;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebFilter;
@@ -36,33 +37,39 @@ public class JWTWebFluxRequestFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String authHeader = exchange.getRequest().getHeaders().getFirst(AUTHORIZATION);
         String token = null;
-        String username = null;
-        log.debug("authHeader: {}", authHeader);
+        String username = "";
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
-                log.debug("token: {}", token);
                 username = jwtService.extractSubject(token);
             } catch (Exception e) {
-                log.error("Unable to get JWT Token");
-            }
-        } else {
-            log.error("JWT Token does not begin with Bearer String");
-        }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            Mono<UserDetails> userDetails = this.myReactiveUserDetailsService.findByUsername(username);
-            ReactiveUserDetails details = (ReactiveUserDetails) userDetails.blockOptional().orElseThrow();
-            if (this.validateToken(token, details)) {
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, details.getAuthorities());
-
-                return chain.filter(exchange)
-                        .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken));
+                log.error("Unable to get JWT Token", e);
             }
         }
 
+        if (token != null && StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String finalToken = token;
+            return this.myReactiveUserDetailsService.findByUsername(username)
+                    .flatMap(userDetails -> {
+                        ReactiveUserDetails details = (ReactiveUserDetails) userDetails;
+                        log.debug("details: {}", details);
+                        if (this.validateToken(finalToken, details)) {
+                            UsernamePasswordAuthenticationToken authenticationToken =
+                                    new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());
+
+                            return chain.filter(exchange)
+                                    .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authenticationToken));
+                        } else {
+                            return Mono.error(new UnauthorizedException("Invalid JWT token"));
+                        }
+                    })
+                    .onErrorResume(e -> {
+                        log.error("Authentication error", e);
+                        return chain.filter(exchange);
+                    });
+        }
         return chain.filter(exchange);
     }
+
 }

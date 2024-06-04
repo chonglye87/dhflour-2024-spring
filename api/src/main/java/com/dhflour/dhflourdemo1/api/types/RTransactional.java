@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Transactional("r2dbcTransactionManager")
-public @interface RXTransactional {
+public @interface RTransactional {
 
     @AliasFor(annotation = Transactional.class, attribute = "value")
     String value() default "r2dbcTransactionManager";

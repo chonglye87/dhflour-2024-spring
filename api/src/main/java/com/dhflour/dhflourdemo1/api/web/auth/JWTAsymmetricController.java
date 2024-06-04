@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.api.types.jwt.UserSampleBody;
@@ -33,7 +33,7 @@ public class JWTAsymmetricController {
 
     @PostMapping("/access-token")
     public ResponseEntity<?> accessToken(@RequestBody UserSampleBody requestBody) {
-        ReactiveUser user = new ReactiveUser();
+        RUser user = new RUser();
         user.setId(requestBody.getId());
         user.setUsername(requestBody.getUsername());
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();

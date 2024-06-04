@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.types.jwt;
 
-import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import lombok.Getter;
 import lombok.ToString;
@@ -19,8 +19,7 @@ public class ReactiveUserDetails extends User {
     private String email;
     private String username;
 
-
-    public ReactiveUserDetails(ReactiveUser user,
+    public ReactiveUserDetails(RUser user,
                                boolean enabled,
                                boolean accountNonExpired,
                                boolean credentialsNonExpired,
