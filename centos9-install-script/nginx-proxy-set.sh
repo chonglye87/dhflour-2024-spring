@@ -5,7 +5,7 @@ config_file="/etc/nginx/conf.d/default.conf"
 
 # Nginx 설정 파일 작성
 echo "Nginx 설정 파일을 생성합니다..."
-sudo tee $config_file > /dev/null <<EOF
+sudo tee "/etc/nginx/conf.d/default.conf" > /dev/null <<EOF
 server {
     listen 80   default_server;
     server_name localhost;
@@ -32,7 +32,7 @@ EOF
 
 # 설정 파일이 성공적으로 생성되었는지 확인
 echo "생성된 설정 파일 내용:"
-sudo cat $config_file
+sudo cat "/etc/nginx/conf.d/default.conf"
 
 # Nginx 구성을 다시 불러옴
 echo "Nginx 설정을 리로드합니다..."
