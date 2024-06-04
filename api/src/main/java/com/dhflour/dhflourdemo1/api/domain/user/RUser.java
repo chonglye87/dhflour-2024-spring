@@ -1,5 +1,6 @@
 package com.dhflour.dhflourdemo1.api.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class RUser {
     @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "test@test.com")
     private String email;
 
+    @JsonIgnore
     @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
     private String password;
 
@@ -44,6 +46,7 @@ public class RUser {
     private LocalDateTime createdAt;
 
     @CreatedBy
+    @JsonIgnore
     @Schema(description = "등록자", hidden = true)
     private Long createdBy;
 
@@ -52,10 +55,12 @@ public class RUser {
     private LocalDateTime updatedAt;
 
     @LastModifiedBy
+    @JsonIgnore
     @Schema(description = "수정자", hidden = true)
     private Long updatedBy;
 
     @Version
+    @JsonIgnore
     @Schema(description = "버전", hidden = true)
     private Long version;
 }
