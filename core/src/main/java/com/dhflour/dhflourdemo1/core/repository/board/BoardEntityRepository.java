@@ -1,5 +1,6 @@
-package com.dhflour.dhflourdemo1.core.domain.board;
+package com.dhflour.dhflourdemo1.core.repository.board;
 
+import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;

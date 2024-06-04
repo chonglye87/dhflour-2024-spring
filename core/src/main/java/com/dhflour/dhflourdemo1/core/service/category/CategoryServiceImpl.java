@@ -1,8 +1,9 @@
 package com.dhflour.dhflourdemo1.core.service.category;
 
+import com.dhflour.dhflourdemo1.core.config.tx.JPATransactional;
 import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
-import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntityRepository;
-import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntitySpecifications;
+import com.dhflour.dhflourdemo1.core.repository.category.CategoryEntityRepository;
+import com.dhflour.dhflourdemo1.core.repository.category.CategoryEntitySpecifications;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UpdateErrorException;
 import com.dhflour.dhflourdemo1.core.types.pagination.PageFilter;
@@ -27,14 +28,14 @@ public class CategoryServiceImpl implements CategoryService {
     private CategoryEntityRepository categoryEntityRepository;
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public CategoryEntity create(CategoryEntity entity) {
         // Validation 처리
         return categoryEntityRepository.save(entity);
     }
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public CategoryEntity update(CategoryEntity entity) {
         if (entity.getId() == null) {
             throw new BadRequestException();
@@ -48,7 +49,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public void delete(CategoryEntity entity) {
         categoryEntityRepository.findById(entity.getId())
                 .ifPresent(CategoryEntity -> {
@@ -57,7 +58,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랙젝션
+    @JPATransactional(readOnly = true) // 읽기 전용 트랙젝션
     public CategoryEntity get(Locale locale, Long id) {
         return categoryEntityRepository.findById(id).map(categoryEntity -> {
             // locale 다국어 처리
@@ -67,7 +68,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랙젝션
+    @JPATransactional(readOnly = true) // 읽기 전용 트랙젝션
     public Page<CategoryEntity> page(PageFilter filter) {
         Specification<CategoryEntity> spec = Specification.where(null);
 
@@ -79,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @JPATransactional(readOnly = true)
     public List<CategoryEntity> listByIds(List<Long> ids) {
         return categoryEntityRepository.findAllByIdIn(ids);
     }

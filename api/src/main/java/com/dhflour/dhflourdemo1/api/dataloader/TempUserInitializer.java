@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 
-@Component
+//@Component
 public class TempUserInitializer implements CommandLineRunner {
 
     @Autowired

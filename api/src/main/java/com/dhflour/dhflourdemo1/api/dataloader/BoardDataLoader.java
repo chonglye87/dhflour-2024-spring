@@ -1,7 +1,7 @@
 package com.dhflour.dhflourdemo1.api.dataloader;
 
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntityRepository;
+import com.dhflour.dhflourdemo1.core.repository.board.BoardEntityRepository;
 import com.dhflour.dhflourdemo1.core.service.board.BoardService;
 import com.dhflour.dhflourdemo1.core.service.category.CategoryService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,8 +10,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+//@Component
 @Slf4j
-@Component
 @Order(2)
 public class BoardDataLoader implements CommandLineRunner {
 

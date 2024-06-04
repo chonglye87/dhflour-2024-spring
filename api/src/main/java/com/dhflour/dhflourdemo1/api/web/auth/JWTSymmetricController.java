@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
+import com.dhflour.dhflourdemo1.core.reactive.user.ReactiveUser;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.jwt.UserSampleBody;
@@ -34,7 +34,7 @@ public class JWTSymmetricController {
 
     @PostMapping("/access-token")
     public ResponseEntity<?> accessToken(@RequestBody UserSampleBody requestBody) {
-        UserEntity user = new UserEntity();
+        ReactiveUser user = new ReactiveUser();
         user.setId(requestBody.getId());
         user.setUsername(requestBody.getUsername());
         Set<GrantedAuthority> authorities = new LinkedHashSet<>();

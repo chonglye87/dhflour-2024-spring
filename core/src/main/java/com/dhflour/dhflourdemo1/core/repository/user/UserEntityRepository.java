@@ -1,5 +1,6 @@
-package com.dhflour.dhflourdemo1.core.domain.user;
+package com.dhflour.dhflourdemo1.core.repository.user;
 
+import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.Locale;
 
@@ -49,12 +50,12 @@ public class BoardController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = BoardPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> page(@Parameter(hidden = true) @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
-                                  @RequestParam(required = false, defaultValue = "") String startDate,
-                                  @RequestParam(required = false, defaultValue = "") String endDate,
-                                  @RequestParam(required = false, defaultValue = "") String query,
-                                  Locale locale) {
-        log.debug("로그");
+    public Mono<?> page(@Parameter(hidden = true) @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                        @RequestParam(required = false, defaultValue = "") String startDate,
+                        @RequestParam(required = false, defaultValue = "") String endDate,
+                        @RequestParam(required = false, defaultValue = "") String query,
+                        Locale locale) {
+
         PageFilter filter = new PageFilter.Builder()
                 .pageable(pageable)
                 .query(query)
@@ -64,7 +65,7 @@ public class BoardController {
                 .build();
 
         Page<BoardEntity> page = boardService.page(filter);
-        return page != null ? ResponseEntity.ok(new BoardPaginationResponse(page)) : ResponseEntity.noContent().build();
+        return page != null ? Mono.just(new BoardPaginationResponse(page)) : Mono.empty();
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

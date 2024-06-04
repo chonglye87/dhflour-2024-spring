@@ -1,8 +1,9 @@
 package com.dhflour.dhflourdemo1.core.service.user;
 
+import com.dhflour.dhflourdemo1.core.config.tx.JPATransactional;
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
-import com.dhflour.dhflourdemo1.core.domain.user.UserEntityRepository;
-import com.dhflour.dhflourdemo1.core.domain.user.UserEntitySpecifications;
+import com.dhflour.dhflourdemo1.core.repository.user.UserEntityRepository;
+import com.dhflour.dhflourdemo1.core.repository.user.UserEntitySpecifications;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UpdateErrorException;
 import com.dhflour.dhflourdemo1.core.types.pagination.PageFilter;
@@ -28,14 +29,14 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    @Transactional
+    @JPATransactional
     public UserEntity create(UserEntity entity) {
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return userEntityRepository.save(entity);
     }
 
     @Override
-    @Transactional
+    @JPATransactional
     public UserEntity update(UserEntity entity) {
         if (entity.getId() == null) {
             throw new BadRequestException();
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
+    @JPATransactional
     public void delete(UserEntity entity) {
         userEntityRepository.findById(entity.getId())
                 .ifPresent(_entity -> {
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @JPATransactional(readOnly = true)
     public UserEntity get(Locale locale, Long id) {
         return userEntityRepository.findById(id).map(entity -> {
             // 후처리
@@ -66,7 +67,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @JPATransactional(readOnly = true)
     public Page<UserEntity> page(PageFilter filter) {
         Specification<UserEntity> spec = Specification.where(null);
 

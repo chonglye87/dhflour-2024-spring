@@ -1,10 +1,11 @@
 package com.dhflour.dhflourdemo1.core.service.board;
 
+import com.dhflour.dhflourdemo1.core.config.tx.JPATransactional;
 import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntityRepository;
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntitySpecifications;
+import com.dhflour.dhflourdemo1.core.repository.board.BoardEntityRepository;
+import com.dhflour.dhflourdemo1.core.repository.board.BoardEntitySpecifications;
 import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntity;
-import com.dhflour.dhflourdemo1.core.domain.category.CategoryEntityRepository;
+import com.dhflour.dhflourdemo1.core.repository.category.CategoryEntityRepository;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UpdateErrorException;
 import com.dhflour.dhflourdemo1.core.types.pagination.PageFilter;
@@ -32,7 +33,7 @@ public class BoardServiceImpl implements BoardService {
     private CategoryEntityRepository categoryEntityRepository;
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public BoardEntity create(BoardEntity entity) {
         log.debug("entity : {}", entity);
         if (entity.getCategories() != null) {
@@ -43,7 +44,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional
+    @JPATransactional("jpaTransactionManager")
     public BoardEntity create(BoardEntity entity, Long idCategory) {
         CategoryEntity categoryEntity = categoryEntityRepository.findById(idCategory).orElse(null);
         if (categoryEntity != null)
@@ -52,7 +53,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public BoardEntity update(BoardEntity entity) {
         if (entity.getId() == null) {
             throw new BadRequestException();
@@ -66,7 +67,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional // 쓰기 전용 트랙젝션
+    @JPATransactional // 쓰기 전용 트랙젝션
     public void delete(BoardEntity entity) {
         boardEntityRepository.findById(entity.getId())
                 .ifPresent(boardEntity -> {
@@ -75,7 +76,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랙젝션
+    @JPATransactional(readOnly = true) // 읽기 전용 트랙젝션
     public BoardEntity get(Locale locale, Long id) {
         return boardEntityRepository.findById(id).map(boardEntity -> {
             // locale 다국어 처리
@@ -84,7 +85,7 @@ public class BoardServiceImpl implements BoardService {
     }
 
     @Override
-    @Transactional(readOnly = true) // 읽기 전용 트랙젝션
+    @JPATransactional(readOnly = true) // 읽기 전용 트랙젝션
     public Page<BoardEntity> page(PageFilter filter) {
         Specification<BoardEntity> spec = Specification.where(null);
 

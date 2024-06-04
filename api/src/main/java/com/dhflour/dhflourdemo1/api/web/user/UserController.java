@@ -1,11 +1,9 @@
 package com.dhflour.dhflourdemo1.api.web.user;
 
-import com.dhflour.dhflourdemo1.core.domain.board.BoardEntity;
+import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.service.user.UserService;
-import com.dhflour.dhflourdemo1.core.service.userdetail.MyUserDetailsService;
-import com.dhflour.dhflourdemo1.core.types.board.BoardRequest;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationResponse;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import com.dhflour.dhflourdemo1.core.types.user.JoinRequest;
@@ -15,7 +13,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,8 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Locale;
 
 @Slf4j
 @RestController
@@ -41,7 +36,7 @@ public class UserController {
     private JWTSymmetricService jwtService;
 
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private MyReactiveUserDetailsService userDetailsService;
 
     // 회원가입
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -55,7 +50,7 @@ public class UserController {
         UserEntity userEntity = request.toEntity();
         UserEntity createdUser = userService.create(userEntity);
 
-        final MyUserDetails userDetails = userDetailsService.loadUserByUsername(createdUser.getEmail());
+        final MyUserDetails userDetails = (MyUserDetails) userDetailsService.findByUsername(createdUser.getEmail()).blockOptional().get();
         final String jwt = jwtService.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(jwt, createdUser));
     }

@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.core.types.jwt;
 
 import com.dhflour.dhflourdemo1.core.domain.user.UserEntity;
+import com.dhflour.dhflourdemo1.core.reactive.user.ReactiveUser;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ public class MyUserDetails extends User {
     private String username;
 
 
-    public MyUserDetails(UserEntity user,
+    public MyUserDetails(ReactiveUser user,
                          boolean enabled,
                          boolean accountNonExpired,
                          boolean credentialsNonExpired,

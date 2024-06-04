@@ -1,8 +1,8 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
+import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.service.user.UserService;
-import com.dhflour.dhflourdemo1.core.service.userdetail.MyUserDetailsService;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.core.types.jwt.AuthenticationResponse;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
@@ -16,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -29,14 +32,15 @@ import java.util.Map;
 @RestController
 public class AuthController {
 
+
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
 
     @Autowired
     private JWTSymmetricService jwtService;
 
     @Autowired
-    private MyUserDetailsService userDetailsService;
+    private MyReactiveUserDetailsService userDetailsService;
 
     @Autowired
     private UserService userService;
@@ -48,17 +52,17 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "JWT 발행함",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = AuthenticationResponse.class)))
-    public ResponseEntity<AuthenticationResponse> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()));
-        } catch (Exception e) {
-            throw new Exception("Incorrect username or password", e);
-        }
-
-        final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
-        final String jwt = jwtService.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt, userService.get(Locale.KOREA, userDetails.getId())));
-
+    public Mono<ResponseEntity<AuthenticationResponse>> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
+        return authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()))
+                .map(authentication -> {
+                    final MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
+                    final String jwt = jwtService.generateToken(userDetails);
+                    return ResponseEntity.ok(new AuthenticationResponse(jwt, userService.get(Locale.KOREA, userDetails.getId())));
+                }).onErrorResume(e -> {
+                    log.error("Authentication error", e);
+                    return Mono.error(new Exception("Incorrect username or password", e));
+                });
     }
 
     @GetMapping(value = "/test", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -69,10 +73,12 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "인증된 사용자 정보 조회 성공",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = MyUserDetails.class)))
-    public ResponseEntity<Map> getAuthenticatedUserInfo(@AuthenticationPrincipal MyUserDetails userDetails) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("id", userDetails.getId());
-        response.put("email", userDetails.getEmail());
-        return ResponseEntity.ok(response);
+    public Mono<ResponseEntity<Map<String, Object>>> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<MyUserDetails> userDetails) {
+        return userDetails.map(user -> {
+            Map<String, Object> response = new HashMap<>();
+            response.put("id", user.getId());
+            response.put("email", user.getEmail());
+            return ResponseEntity.ok(response);
+        });
     }
 }

@@ -12,11 +12,12 @@ import lombok.*;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "User")
+@Table(name = "User") // JPA
 @Schema(description = "사용자 엔티티")
 public class UserEntity extends AbstractEntity<Long> {
 
     @Id
+    @org.springframework.data.annotation.Id // R2DBC
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "id", example = "1", readOnly = true, requiredMode = Schema.RequiredMode.REQUIRED)
     private Long id;
@@ -39,6 +40,7 @@ public class UserEntity extends AbstractEntity<Long> {
 
     @JsonIgnore
     @Transient
+    @org.springframework.data.annotation.Transient
     private String passwordConfirm; // 비밀번호 확인
 
     @Embedded
