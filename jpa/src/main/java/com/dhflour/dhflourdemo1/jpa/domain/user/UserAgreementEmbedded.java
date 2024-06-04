@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.jpa.domain.user;
 
 //import io.swagger.v3.oas.annotations.media.Schema;
+
 import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;

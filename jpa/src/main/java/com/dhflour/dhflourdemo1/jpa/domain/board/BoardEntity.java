@@ -39,7 +39,7 @@ public class BoardEntity {
 //    @Schema(description = "마지막 업데이트 시간", example = "2023-10-02T12:00:00", readOnly = true)
     private LocalDateTime updatedAt = LocalDateTime.now();
 
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "board_category",
             joinColumns = @JoinColumn(name = "board_id"),

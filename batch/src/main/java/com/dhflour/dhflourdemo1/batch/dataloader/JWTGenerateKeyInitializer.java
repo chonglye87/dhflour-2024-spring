@@ -1,10 +1,9 @@
-package com.dhflour.dhflourdemo1.api.dataloader;
+package com.dhflour.dhflourdemo1.batch.dataloader;
 
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
 
 //@Component
 public class JWTGenerateKeyInitializer implements CommandLineRunner {

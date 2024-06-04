@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.types.jwt;
 
-import com.dhflour.dhflourdemo1.api.repository.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUser;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import lombok.Getter;
 import lombok.ToString;

@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config.webflux;
+package com.dhflour.dhflourdemo1.api.config;
 
 import io.r2dbc.spi.ConnectionFactory;
 import org.springframework.context.annotation.Bean;
@@ -13,7 +13,7 @@ import org.springframework.transaction.ReactiveTransactionManager;
 // R2DBC 리포지토리를 활성화하고, 베이스 패키지를 지정합니다.
 @Configuration
 @EnableR2dbcRepositories(
-        basePackages = "com.dhflour.dhflourdemo1.core.reactive",
+        basePackages = "com.dhflour.dhflourdemo1.api.domain",
         entityOperationsRef = "r2dbcEntityTemplate" // 기본 R2DBC 엔티티 템플릿을 지정합니다.
 )
 public class R2dbcConfig {

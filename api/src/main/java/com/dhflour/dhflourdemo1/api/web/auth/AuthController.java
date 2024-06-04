@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.api.repository.user.ReactiveUserRepository;
+import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUserRepository;
 import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationRequest;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -56,7 +56,9 @@ public class AuthController {
                 .map(authentication -> {
                     final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
                     final String jwt = jwtService.generateToken(userDetails.toMyUserDetails());
-                    return ResponseEntity.ok(new AuthenticationResponse(jwt, reactiveUserRepository.findOneByEmail(userDetails.getEmail()).block()));
+                    ReactiveUser reactiveUser = reactiveUserRepository.findOneByEmail(userDetails.getEmail()).block();
+                    log.debug("reactiveUser : {}", reactiveUser);
+                    return ResponseEntity.ok(new AuthenticationResponse(jwt, reactiveUser));
                 }).onErrorResume(e -> {
                     log.error("Authentication error", e);
                     return Mono.error(new Exception("Incorrect username or password", e));

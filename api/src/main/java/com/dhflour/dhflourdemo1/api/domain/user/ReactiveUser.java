@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.repository.user;
+package com.dhflour.dhflourdemo1.api.domain.user;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 @ToString
-@Table("User")
+@Table("user")
 public class ReactiveUser {
 
     @Id
@@ -34,7 +34,7 @@ public class ReactiveUser {
     private LocalDateTime updatedAt;
 
     @LastModifiedBy
-    private Long updateBy;
+    private Long updatedBy;
 
     @Version
     private Long version;

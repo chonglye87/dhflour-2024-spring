@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config.webflux;
+package com.dhflour.dhflourdemo1.api.config;
 
 import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;

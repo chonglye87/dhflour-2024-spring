@@ -38,7 +38,7 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
     private int algorithm;
 
     private SignatureAlgorithm SIGNATURE_ALGORITHM = Jwts.SIG.RS256;
-    private int keySize  = 2048;
+    private int keySize = 2048;
 
     @PostConstruct
     public void init() {
@@ -60,7 +60,6 @@ public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
         }
         log.debug("Algorithm set to: {}, Key size set to: {}", SIGNATURE_ALGORITHM, keySize);
     }
-
 
 
     @Override

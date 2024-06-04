@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 @Service
-public class ProcessEnvServiceImpl implements ProcessEnvService{
+public class ProcessEnvServiceImpl implements ProcessEnvService {
 
     @Value("${process.env}")
     private String processEnv;

@@ -5,6 +5,8 @@ public interface ProcessEnvService {
     String getEnv();
 
     boolean isLocal();
+
     boolean isDevelopment();
+
     boolean isProduction();
 }

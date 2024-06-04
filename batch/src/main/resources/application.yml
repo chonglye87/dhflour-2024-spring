@@ -11,7 +11,7 @@ spring:
     # process env (local,dev,prod) 설정
     # active: dev
     # core 설정 연동
-    include: core
+    include: core,jpa
 
   servlet:
     multipart:
@@ -22,4 +22,5 @@ spring:
       - classpath:application-prometheus.properties
       - classpath:application-apidoc.properties
       - classpath:application-logger.properties
+      - classpath:application-jwt.yml
 

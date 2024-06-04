@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config.webflux;
+package com.dhflour.dhflourdemo1.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;

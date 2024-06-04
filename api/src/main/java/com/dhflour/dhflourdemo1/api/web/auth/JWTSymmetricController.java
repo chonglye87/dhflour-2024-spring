@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
-import com.dhflour.dhflourdemo1.api.repository.user.ReactiveUser;
+import com.dhflour.dhflourdemo1.api.domain.user.ReactiveUser;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.api.types.jwt.UserSampleBody;

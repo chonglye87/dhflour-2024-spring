@@ -1,4 +1,4 @@
-//package com.dhflour.dhflourdemo1.api.dataloader;
+package com.dhflour.dhflourdemo1.batch.dataloader;//package com.dhflour.dhflourdemo1.api.dataloader;
 //
 //import com.dhflour.dhflourdemo1.jpa.domain.board.BoardEntity;
 //import com.dhflour.dhflourdemo1.core.repository.board.BoardEntityRepository;

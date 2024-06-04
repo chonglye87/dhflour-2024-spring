@@ -10,6 +10,7 @@ import java.util.Locale;
 public interface BoardService {
     // Create
     BoardEntity create(BoardEntity entity);
+
     BoardEntity create(BoardEntity entity, Long idCategory);
 
     // Update

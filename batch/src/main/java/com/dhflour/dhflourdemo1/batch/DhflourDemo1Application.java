@@ -11,10 +11,14 @@ import java.util.Properties;
 
 @SpringBootApplication(scanBasePackages = {
         "com.dhflour.dhflourdemo1.batch",
+        "com.dhflour.dhflourdemo1.jpa",
         "com.dhflour.dhflourdemo1.core",
 })
-@EnableJpaRepositories(basePackages = {"com.dhflour.dhflourdemo1.core.domain"})
-@EntityScan({"com.dhflour.dhflourdemo1.core.domain"})
+@EnableJpaRepositories(
+        basePackages = {"com.dhflour.dhflourdemo1.jpa.domain"},
+        transactionManagerRef = "jpaTransactionManager"
+)
+@EntityScan({"com.dhflour.dhflourdemo1.jpa.domain"})
 public class DhflourDemo1Application {
 
     public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config.webflux;
+package com.dhflour.dhflourdemo1.api.config;
 
 import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
