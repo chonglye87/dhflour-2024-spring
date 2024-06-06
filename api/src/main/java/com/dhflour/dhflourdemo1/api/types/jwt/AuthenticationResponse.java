@@ -13,12 +13,16 @@ public class AuthenticationResponse implements Serializable {
     @Schema(description = "JWT Access Token", required = true, example = "접근 토큰")
     private final String accessToken;
 
+    @Schema(description = "JWT Refresh Token", required = true, example = "접근 토큰")
+    private final String refreshToken;
+
     @Setter
     @Schema(description = "로그인 사용자 정보", required = true)
     private RUser user;
 
-    public AuthenticationResponse(String jwt, RUser user) {
-        this.accessToken = jwt;
+    public AuthenticationResponse(String accessToken, String refreshToken, RUser user) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
         this.user = user;
     }
 

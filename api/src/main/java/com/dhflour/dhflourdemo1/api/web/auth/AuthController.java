@@ -8,11 +8,15 @@ import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationResponse;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.core.types.error.UnauthorizedException;
+import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
+import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -28,7 +32,6 @@ import reactor.core.publisher.Mono;
 @RestController
 public class AuthController {
 
-
     @Autowired
     private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
 
@@ -37,27 +40,52 @@ public class AuthController {
 
     @Autowired
     private UserAPIService userAPIService;
-
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @Operation(summary = "[auth-1] JWT 발행",
             description = "JWT 발행합니다.",
-            operationId = "authenticate")
+            operationId = "access-token")
     @ApiResponse(responseCode = "200", description = "JWT 발행함",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = AuthenticationResponse.class)))
     public Mono<ResponseEntity<AuthenticationResponse>> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
         return authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()))
-                .map(authentication -> {
+                .flatMap(authentication -> {
                     final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
-                    final String jwt = jwtService.generateToken(userDetails.toMyUserDetails());
-                    RUser rUser = userAPIService.getUser(userDetails.getEmail()).block();
-                    log.debug("reactiveUser : {}", rUser);
-                    return ResponseEntity.ok(new AuthenticationResponse(jwt, rUser));
-                }).onErrorResume(e -> {
+                    final String accessToken = jwtService.generateToken(userDetails.toMyUserDetails());
+                    final String refreshToken = jwtService.generateRefreshToken(userDetails.toMyUserDetails());
+
+                    return userAPIService.getUser(userDetails.getEmail())
+                            .map(user -> ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken, user)))
+                            .switchIfEmpty(Mono.error(new UnauthorizedException("User not found")));
+                })
+                .onErrorResume(e -> {
                     log.error("Authentication error", e);
                     return Mono.error(new Exception("Incorrect username or password", e));
                 });
+    }
+
+    @PostMapping("/refresh-token")
+    public Mono<ResponseEntity<AuthResponse>> refresh(@RequestBody RefreshRequest refreshRequest) {
+        String refreshToken = refreshRequest.getRefreshToken();
+        Claims claims = jwtService.verifyToken(refreshToken);
+
+        if (jwtService.isTokenExpired(refreshToken)) {
+            throw new UnauthorizedException("User not found");
+        }
+
+        return userAPIService.getUser(claims.getSubject())
+                .flatMap(user -> {
+                    MyUserDetails userDetails = MyUserDetails.builder()
+                            .id(user.getId())
+                            .email(user.getEmail())
+                            .build();
+
+                    String newAccessToken = jwtService.generateToken(userDetails);
+
+                    return Mono.just(ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken)));
+                })
+                .switchIfEmpty(Mono.error(new UnauthorizedException("User not found")));
     }
 
     @GetMapping(value = "/authenticated-info", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -89,5 +117,25 @@ public class AuthController {
                         .map(userInfo -> ResponseEntity.ok().body(userInfo))
                         .switchIfEmpty(Mono.error(new UnauthorizedException("User not found"))))
                 .defaultIfEmpty(ResponseEntity.ok().body(new RUser()));
+    }
+
+    @Setter
+    @Getter
+    static class RefreshRequest {
+        private String refreshToken;
+    }
+
+    @Setter
+    @Getter
+    static class AuthResponse {
+        private String accessToken;
+        private String refreshToken;
+
+        public AuthResponse(String accessToken, String refreshToken) {
+            this.accessToken = accessToken;
+            this.refreshToken = refreshToken;
+        }
+
+        // Getters and setters
     }
 }

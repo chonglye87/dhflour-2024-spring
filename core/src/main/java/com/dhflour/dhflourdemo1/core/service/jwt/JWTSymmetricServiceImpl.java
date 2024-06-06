@@ -18,20 +18,15 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.function.Function;
 
-
-/**
- * 대칭키 알고리즘 (Symmetric Key Algorithms)
- * HS256:256비트	높은 보안 강도,빠름,웹 토큰 서명, 일반적인 보안 애플리케이션
- * HS384:384비트	더 높은 보안 강도,중간,금융 서비스, 추가 보안이 필요한 환경
- * HS512:512비트	가장 높은 보안 강도,느림,최고 수준의 보안이 필요한 환경
- * 대칭키 알고리즘은 하나의 비밀 키를 사용하여 토큰을 서명하고 검증합니다. 이 방법은 빠르고 간단하지만, 같은 키를 공유해야 하므로 키 관리에 주의가 필요합니다.
- */
 @Slf4j
 @Service
 public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
-    @Value("${jwt.expiration}")
-    private long expiration;
+    @Value("${jwt.access.expiration}")
+    private long accessExpiration;
+
+    @Value("${jwt.refresh.expiration}")
+    private long refreshExpiration;
 
     @Value("${jwt.symmetric.secretKey}")
     private String secretKey;
@@ -39,7 +34,6 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Value("${jwt.symmetric.algorithm}")
     private int algorithm;
 
-    // HMAC-SHA-512 알고리즘 유형
     private MacAlgorithm SIGNATURE_ALGORITHM = Jwts.SIG.HS256;
 
     @PostConstruct
@@ -63,43 +57,44 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Override
     public void createSecretKey() {
         try {
-
             final String algorithm = String.format("HmacSHA%s", SIGNATURE_ALGORITHM.getKeyBitLength());
-            KeyGenerator keyGen = KeyGenerator.getInstance(algorithm); // "HmacSHA256"
-            keyGen.init(SIGNATURE_ALGORITHM.getKeyBitLength()); // 키 크기 설정 256
+            KeyGenerator keyGen = KeyGenerator.getInstance(algorithm);
+            keyGen.init(SIGNATURE_ALGORITHM.getKeyBitLength());
 
-            // 비밀 키 생성
             SecretKey secretKey = keyGen.generateKey();
-
-            // 비밀 키를 Base64 형식으로 인코딩
             String encodedKey = Base64.getEncoder().encodeToString(secretKey.getEncoded());
 
-            // 인코딩된 비밀 키 출력
             log.debug("JWT Symmetric Secret Key: " + encodedKey);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    // ES256 (ECDSA with P-256 and SHA-256)
     @Override
     public String generateToken(MyUserDetails user) {
+        return generateToken(user, accessExpiration);
+    }
+
+    @Override
+    public String generateRefreshToken(MyUserDetails user) {
+        return generateToken(user, refreshExpiration);
+    }
+
+    private String generateToken(MyUserDetails user, long expiration) {
         try {
-            // 현재 시간 설정
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
 
-            // JWT 생성
             return Jwts.builder()
-                    .id(String.valueOf(user.getId())) // 토큰 ID 설정
-                    .claim("username", user.getUsername()) // 사용자명 클레임 설정
-                    .issuer("issuer") // 발행자 설정
-                    .subject(user.getEmail()) // 주제 설정
-                    .issuedAt(now) // 발행 시간 설정
-                    .expiration(new Date(nowMillis + expiration)) // 만료 시간 설정 (1시간 후)
-                    .notBefore(now) // 유효 시작 시간 설정
-                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)), SIGNATURE_ALGORITHM) // 서명 알고리즘과 SecretKey 설정
-                    .compact(); // 토큰 생성 및 컴팩트화
+                    .id(String.valueOf(user.getId()))
+                    .claim("username", user.getUsername())
+                    .issuer("issuer")
+                    .subject(user.getEmail())
+                    .issuedAt(now)
+                    .expiration(new Date(nowMillis + expiration))
+                    .notBefore(now)
+                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)), SIGNATURE_ALGORITHM)
+                    .compact();
         } catch (Exception e) {
             throw new RuntimeException("Failed to generate token", e);
         }

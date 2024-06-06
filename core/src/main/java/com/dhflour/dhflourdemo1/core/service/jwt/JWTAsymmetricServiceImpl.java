@@ -25,7 +25,7 @@ import java.util.function.Function;
 @Service
 public class JWTAsymmetricServiceImpl implements JWTAsymmetricService {
 
-    @Value("${jwt.expiration}")
+    @Value("${jwt.access.expiration}")
     private long expiration;
 
     @Value("${jwt.asymmetric.privateKey}")

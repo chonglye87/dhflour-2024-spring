@@ -12,6 +12,8 @@ public interface JWTSymmetricService {
 
     String generateToken(MyUserDetails user);
 
+    String generateRefreshToken(MyUserDetails user);
+
     Claims verifyToken(String jwtToken);
 
     String extractSubject(String token);
