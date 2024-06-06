@@ -1,13 +1,18 @@
 package com.dhflour.dhflourdemo1.api.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.result.method.annotation.ArgumentResolverConfigurer;
 
 @Configuration
 @EnableWebFlux
 public class APIWebFluxConfigurer implements WebFluxConfigurer {
+
+    @Autowired
+    private CurrentUserArgumentResolver currentUserArgumentResolver;
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
@@ -18,16 +23,8 @@ public class APIWebFluxConfigurer implements WebFluxConfigurer {
                 .allowCredentials(true);
     }
 
-//    @Override
-//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        WebFluxConfigurer.super.addResourceHandlers(registry);
-//
-//        // '/static/**' 경로로 들어오는 요청을 처리하기 위한 리소스 핸들러
-//        registry.addResourceHandler("/static/**")
-//                .addResourceLocations("classpath:/static/");
-//
-//        // '/public/**' 경로로 들어오는 요청을 처리하기 위한 리소스 핸들러
-//        registry.addResourceHandler("/public/**")
-//                .addResourceLocations("classpath:/public/");
-//    }
+    @Override
+    public void configureArgumentResolvers(ArgumentResolverConfigurer configurer) {
+        configurer.addCustomResolver(currentUserArgumentResolver);
+    }
 }

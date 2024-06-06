@@ -69,9 +69,25 @@ public class AuthController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RUser.class)))
     public Mono<ResponseEntity<RUser>> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
-        AuthUtils.required(userDetails); // 인증 필수
-        return userDetails
-                .map(user -> ResponseEntity.ok().body(userAPIService.getUser(user.getEmail()).block()))
-                .switchIfEmpty(Mono.error(new UnauthorizedException("Invalid or missing access token")));
+        return AuthUtils.required(userDetails)
+                .flatMap(user -> userAPIService.getUser(user.getEmail())
+                        .map(userInfo -> ResponseEntity.ok().body(userInfo))
+                        .switchIfEmpty(Mono.error(new UnauthorizedException("User not found"))));
+    }
+
+    @GetMapping(value = "/optional-info", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "옵션 사용자 정보 조회",
+            description = "JWT를 통해 인증된 사용자 정보 또는 기본 정보를 조회합니다.",
+            operationId = "getOptionalUserInfo",
+            security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = RUser.class)))
+    public Mono<ResponseEntity<RUser>> getOptionalUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
+        return AuthUtils.optional(userDetails)
+                .flatMap(user -> userAPIService.getUser(user.getEmail())
+                        .map(userInfo -> ResponseEntity.ok().body(userInfo))
+                        .switchIfEmpty(Mono.error(new UnauthorizedException("User not found"))))
+                .defaultIfEmpty(ResponseEntity.ok().body(new RUser()));
     }
 }
