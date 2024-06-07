@@ -94,6 +94,7 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
     @Override
     public String generateRefreshToken(MyUserDetails user) {
         try {
+
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
 
