@@ -22,23 +22,22 @@ public class RUser {
     @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "홍길동")
     private String username;
 
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "01011112222")
+    @Schema(description = "휴대폰번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "01011112222")
     private String mobile;
 
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "test@test.com")
+    @Schema(description = "이메일", requiredMode = Schema.RequiredMode.REQUIRED, example = "test@test.com")
     private String email;
 
     @JsonIgnore
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
     private String password;
 
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @Schema(description = "이용약관동의 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
     private boolean policy;
 
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
+    @Schema(description = "개인정보처리방침동의 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")
     private boolean privacy;
 
-    @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
+    @Schema(description = "마케팅수신동의 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
     private boolean marketing;
 
     @CreatedDate

@@ -4,5 +4,8 @@ import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import reactor.core.publisher.Mono;
 
 public interface UserAPIService {
-    Mono<RUser> getUser(String email);
+    // 활성 유저
+    Mono<RUser> getActiveUser(String email);
+    // 활성 유저
+    Mono<RUser> getActiveUser(Long id);
 }

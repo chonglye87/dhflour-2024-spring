@@ -72,15 +72,6 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
 
     @Override
     public String generateToken(MyUserDetails user) {
-        return generateToken(user, accessExpiration);
-    }
-
-    @Override
-    public String generateRefreshToken(MyUserDetails user) {
-        return generateToken(user, refreshExpiration);
-    }
-
-    private String generateToken(MyUserDetails user, long expiration) {
         try {
             long nowMillis = System.currentTimeMillis();
             Date now = new Date(nowMillis);
@@ -91,8 +82,27 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
                     .issuer("issuer")
                     .subject(user.getEmail())
                     .issuedAt(now)
-                    .expiration(new Date(nowMillis + expiration))
+                    .expiration(new Date(nowMillis + accessExpiration))
                     .notBefore(now)
+                    .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)), SIGNATURE_ALGORITHM)
+                    .compact();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate token", e);
+        }
+    }
+
+    @Override
+    public String generateRefreshToken(MyUserDetails user) {
+        try {
+            long nowMillis = System.currentTimeMillis();
+            Date now = new Date(nowMillis);
+
+            // 리프레시 토큰에는 username 및 email 대신 user ID만 포함
+            return Jwts.builder()
+                    .id(String.valueOf(user.getId()))
+                    .issuer("issuer")
+                    .issuedAt(now)
+                    .expiration(new Date(nowMillis + refreshExpiration))
                     .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(secretKey)), SIGNATURE_ALGORITHM)
                     .compact();
         } catch (Exception e) {

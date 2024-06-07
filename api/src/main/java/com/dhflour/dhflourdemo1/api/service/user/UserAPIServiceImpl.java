@@ -17,7 +17,13 @@ public class UserAPIServiceImpl implements UserAPIService {
 
     @Override
     @Transactional
-    public Mono<RUser> getUser(String email) {
-        return userRepository.findOneByEmail(email);
+    public Mono<RUser> getActiveUser(String email) {
+        return userRepository.findOneByEmail(email); // TODO 활성 여부 체크 (탈퇴 및 잠금)
+    }
+
+    @Override
+    @Transactional
+    public Mono<RUser> getActiveUser(Long id) {
+        return userRepository.findById(id); // TODO 활성 여부 체크 (탈퇴 및 잠금)
     }
 }

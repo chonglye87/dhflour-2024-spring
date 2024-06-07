@@ -1,5 +1,8 @@
 jwt:
-  expiration: 3600000
+  access:
+    expiration: 3600000 # 1 hour in milliseconds
+  refresh:
+    expiration: 2592000000 # 30 days in milliseconds
   symmetric:
     algorithm: 256 # 256, 384, 512
     secretKey: ZMYsyFDPalKH5I7v3aWBZMRoXQdIvRFfSJ1kZOyX9n8=

@@ -2,35 +2,40 @@ package com.dhflour.dhflourdemo1.api.web.auth;
 
 import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import com.dhflour.dhflourdemo1.api.service.user.UserAPIService;
-import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
-import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationResponse;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
+import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
+import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
+import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UnauthorizedException;
 import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
+import com.dhflour.dhflourdemo1.core.types.jwt.RefreshTokenRequest;
+import com.dhflour.dhflourdemo1.core.types.jwt.RefreshTokenResponse;
 import io.jsonwebtoken.Claims;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+
 @Slf4j
 @RequestMapping(value = "/api/v1/authenticate")
 @RestController
 public class AuthController {
+
+    final private static UnauthorizedException ERROR_USER_NOT_FOUND = new UnauthorizedException("User not found");
 
     @Autowired
     private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
@@ -40,52 +45,51 @@ public class AuthController {
 
     @Autowired
     private UserAPIService userAPIService;
-    @PostMapping(value = "/authenticate", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "[auth-1] JWT 발행",
-            description = "JWT 발행합니다.",
-            operationId = "access-token")
-    @ApiResponse(responseCode = "200", description = "JWT 발행함",
-            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = AuthenticationResponse.class)))
-    public Mono<ResponseEntity<AuthenticationResponse>> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
-        return authenticationManager.authenticate(
-                        new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(), authenticationRequest.getPassword()))
-                .flatMap(authentication -> {
-                    final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
-                    final String accessToken = jwtService.generateToken(userDetails.toMyUserDetails());
-                    final String refreshToken = jwtService.generateRefreshToken(userDetails.toMyUserDetails());
 
-                    return userAPIService.getUser(userDetails.getEmail())
-                            .map(user -> ResponseEntity.ok(new AuthenticationResponse(accessToken, refreshToken, user)))
-                            .switchIfEmpty(Mono.error(new UnauthorizedException("User not found")));
-                })
-                .onErrorResume(e -> {
-                    log.error("Authentication error", e);
-                    return Mono.error(new Exception("Incorrect username or password", e));
+    @PostMapping(value = "/access-token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "[auth-1] JWT Access Token 발행", description = "JWT Access Token 발행합니다.", operationId = "authAccessToken")
+    @ApiResponse(responseCode = "200", description = "JWT Access Token 발행함", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthenticationResponse.class)))
+    public Mono<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
+        return Mono.just(authenticationRequest)
+                .filter(request -> StringUtils.isNotEmpty(request.getEmail()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty")))
+                .filter(request -> StringUtils.isNotEmpty(request.getPassword()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
+                .flatMap(request -> authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())))
+                .flatMap(authentication -> {
+                    try {
+                        final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
+                        final MyUserDetails myUserDetails = userDetails.toMyUserDetails();
+                        final String accessToken = jwtService.generateToken(myUserDetails);
+                        final String refreshToken = jwtService.generateRefreshToken(myUserDetails);
+                        return userAPIService.getActiveUser(myUserDetails.getEmail())
+                                .map(user -> new AuthenticationResponse(accessToken, refreshToken, user))
+                                .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND));
+                    } catch (Exception e) {
+                        return Mono.error(ERROR_USER_NOT_FOUND);
+                    }
                 });
     }
 
-    @PostMapping("/refresh-token")
-    public Mono<ResponseEntity<AuthResponse>> refresh(@RequestBody RefreshRequest refreshRequest) {
-        String refreshToken = refreshRequest.getRefreshToken();
-        Claims claims = jwtService.verifyToken(refreshToken);
-
-        if (jwtService.isTokenExpired(refreshToken)) {
-            throw new UnauthorizedException("User not found");
-        }
-
-        return userAPIService.getUser(claims.getSubject())
-                .flatMap(user -> {
-                    MyUserDetails userDetails = MyUserDetails.builder()
-                            .id(user.getId())
-                            .email(user.getEmail())
-                            .build();
-
-                    String newAccessToken = jwtService.generateToken(userDetails);
-
-                    return Mono.just(ResponseEntity.ok(new AuthResponse(newAccessToken, refreshToken)));
-                })
-                .switchIfEmpty(Mono.error(new UnauthorizedException("User not found")));
+    @PostMapping(value = "/refresh-token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "[auth-2] JWT Refresh Token 발행", description = "JWT Refresh Token 발행합니다.", operationId = "authRefreshToken")
+    @ApiResponse(responseCode = "200", description = "JWT Refresh Token 발행함", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthenticationResponse.class)))
+    public Mono<?> refresh(@RequestBody RefreshTokenRequest body) {
+        final String refreshToken = body.getRefreshToken();
+        if (StringUtils.isEmpty(refreshToken)) throw new BadRequestException("Refresh token is empty");
+        final Claims claims = jwtService.verifyToken(refreshToken);
+        if (jwtService.isTokenExpired(refreshToken) || !NumberUtils.isCreatable(claims.getId())) throw ERROR_USER_NOT_FOUND;
+        return userAPIService.getActiveUser(Long.parseLong(claims.getId()))
+                .doOnNext(rUser -> log.debug("refresh token authed user : {}", rUser))
+                .flatMap(user -> Mono.just(RefreshTokenResponse.builder()
+                        .accessToken(jwtService.generateToken(MyUserDetails.builder()
+                                .id(user.getId())
+                                .email(user.getEmail())
+                                .build()))
+                        .refreshToken(refreshToken)
+                        .build()))
+                .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND));
     }
 
     @GetMapping(value = "/authenticated-info", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -96,11 +100,11 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "인증된 사용자 정보 조회 성공",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RUser.class)))
-    public Mono<ResponseEntity<RUser>> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
+    public Mono<?> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
         return AuthUtils.required(userDetails)
-                .flatMap(user -> userAPIService.getUser(user.getEmail())
-                        .map(userInfo -> ResponseEntity.ok().body(userInfo))
-                        .switchIfEmpty(Mono.error(new UnauthorizedException("User not found"))));
+                .flatMap(user -> userAPIService.getActiveUser(user.getEmail())
+                        .doOnNext(rUser -> log.debug("required authed user : {}", rUser))
+                        .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
     }
 
     @GetMapping(value = "/optional-info", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -111,31 +115,10 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RUser.class)))
-    public Mono<ResponseEntity<RUser>> getOptionalUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
+    public Mono<?> getOptionalUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
         return AuthUtils.optional(userDetails)
-                .flatMap(user -> userAPIService.getUser(user.getEmail())
-                        .map(userInfo -> ResponseEntity.ok().body(userInfo))
-                        .switchIfEmpty(Mono.error(new UnauthorizedException("User not found"))))
-                .defaultIfEmpty(ResponseEntity.ok().body(new RUser()));
-    }
-
-    @Setter
-    @Getter
-    static class RefreshRequest {
-        private String refreshToken;
-    }
-
-    @Setter
-    @Getter
-    static class AuthResponse {
-        private String accessToken;
-        private String refreshToken;
-
-        public AuthResponse(String accessToken, String refreshToken) {
-            this.accessToken = accessToken;
-            this.refreshToken = refreshToken;
-        }
-
-        // Getters and setters
+                .flatMap(user -> userAPIService.getActiveUser(user.getEmail())
+                        .doOnNext(rUser -> log.debug("option authed user : {}", rUser))
+                        .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
     }
 }

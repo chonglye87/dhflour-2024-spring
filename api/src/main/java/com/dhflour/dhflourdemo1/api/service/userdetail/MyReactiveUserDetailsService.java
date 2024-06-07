@@ -21,7 +21,7 @@ public class MyReactiveUserDetailsService implements ReactiveUserDetailsService 
 
     @Override
     public Mono<UserDetails> findByUsername(String username) {
-        return userAPIService.getUser(username)
+        return userAPIService.getActiveUser(username)
                 .map(user -> {
 
                     boolean enabled = true;
