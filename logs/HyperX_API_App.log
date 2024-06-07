@@ -1,0 +1,155 @@
+2024-06-07T16:15:57.156+09:00  INFO 7579 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Starting DhflourDemo1Application using Java 17.0.10 with PID 7579 (/Users/chonglye/Documents/Works/projects/dhflour-study-2024-back/api/build/classes/java/main started by chonglye in /Users/chonglye/Documents/Works/projects/dhflour-study-2024-back/api)
+2024-06-07T16:15:57.157+09:00 DEBUG 7579 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Running with Spring Boot v3.2.4, Spring v6.1.5
+2024-06-07T16:15:57.158+09:00  INFO 7579 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : The following 2 profiles are active: "core", "local"
+2024-06-07T16:15:57.177+09:00  INFO 7579 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-06-07T16:15:57.177+09:00  INFO 7579 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-06-07T16:15:57.463+09:00  INFO 7579 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2024-06-07T16:15:57.467+09:00  INFO 7579 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 2 ms. Found 0 R2DBC repository interfaces.
+2024-06-07T16:15:57.603+09:00  INFO 7579 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2024-06-07T16:15:57.669+09:00  INFO 7579 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 65 ms. Found 1 R2DBC repository interface.
+2024-06-07T16:15:57.797+09:00 DEBUG 7579 --- [restartedMain] i.n.u.i.logging.InternalLoggerFactory    : Using SLF4J as the default logging framework
+2024-06-07T16:15:57.798+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : -Dio.netty.noUnsafe: false
+2024-06-07T16:15:57.798+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : Java version: 17
+2024-06-07T16:15:57.799+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.theUnsafe: available
+2024-06-07T16:15:57.799+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.copyMemory: available
+2024-06-07T16:15:57.799+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.storeFence: available
+2024-06-07T16:15:57.800+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.Buffer.address: available
+2024-06-07T16:15:57.800+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : direct buffer constructor: unavailable: Reflective setAccessible(true) disabled
+2024-06-07T16:15:57.800+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.Bits.unaligned: available, true
+2024-06-07T16:15:57.800+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable: class io.netty.util.internal.PlatformDependent0$7 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @16529dec
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.DirectByteBuffer.<init>(long, {int,long}): unavailable
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : sun.misc.Unsafe: available
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.tmpdir: /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T (java.io.tmpdir)
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.bitMode: 64 (sun.arch.data.model)
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : Platform: MacOS
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.maxDirectMemory: -1 bytes
+2024-06-07T16:15:57.801+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.uninitializedArrayAllocationThreshold: -1
+2024-06-07T16:15:57.802+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.internal.CleanerJava9      : java.nio.ByteBuffer.cleaner(): available
+2024-06-07T16:15:57.802+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.noPreferDirect: false
+2024-06-07T16:15:57.829+09:00 DEBUG 7579 --- [restartedMain] i.n.u.internal.InternalThreadLocalMap    : -Dio.netty.threadLocalMap.stringBuilder.initialSize: 1024
+2024-06-07T16:15:57.830+09:00 DEBUG 7579 --- [restartedMain] i.n.u.internal.InternalThreadLocalMap    : -Dio.netty.threadLocalMap.stringBuilder.maxSize: 4096
+2024-06-07T16:15:57.839+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.ResourceLeakDetector       : -Dio.netty.leakDetection.level: simple
+2024-06-07T16:15:57.839+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.ResourceLeakDetector       : -Dio.netty.leakDetection.targetRecords: 4
+2024-06-07T16:15:57.858+09:00 DEBUG 7579 --- [restartedMain] i.n.util.concurrent.GlobalEventExecutor  : -Dio.netty.globalEventExecutor.quietPeriodSeconds: 1
+2024-06-07T16:15:57.892+09:00 DEBUG 7579 --- [restartedMain] c.d.d.c.s.jwt.JWTSymmetricServiceImpl    : Algorithm set to: HS256
+2024-06-07T16:15:58.045+09:00 DEBUG 7579 --- [restartedMain] c.d.d.c.s.jwt.JWTAsymmetricServiceImpl   : Algorithm set to: RS256, Key size set to: 2048
+2024-06-07T16:15:58.186+09:00  INFO 7579 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoint(s) beneath base path '/actuator'
+2024-06-07T16:15:58.246+09:00 DEBUG 7579 --- [restartedMain] c.d.dhflourdemo1.api.config.R2dbcConfig  : r2dbcTransactionManager
+2024-06-07T16:15:58.395+09:00  WARN 7579 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2024-06-07T16:15:58.423+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.workdir: /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T (io.netty.tmpdir)
+2024-06-07T16:15:58.423+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.deleteLibAfterLoading: true
+2024-06-07T16:15:58.423+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.tryPatchShadedId: true
+2024-06-07T16:15:58.423+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.detectNativeLibraryDuplicates: true
+2024-06-07T16:15:58.485+09:00 DEBUG 7579 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : Successfully loaded the library /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T/libnetty_transport_native_kqueue_aarch_6414107416780531947877.dylib
+2024-06-07T16:15:58.487+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.NetUtil                    : -Djava.net.preferIPv4Stack: false
+2024-06-07T16:15:58.487+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.NetUtil                    : -Djava.net.preferIPv6Addresses: false
+2024-06-07T16:15:58.490+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.NetUtilInitializations     : Loopback interface: lo0 (lo0, 0:0:0:0:0:0:0:1%lo0)
+2024-06-07T16:15:58.490+09:00 DEBUG 7579 --- [restartedMain] io.netty.util.NetUtil                    : Failed to get SOMAXCONN from sysctl and file /proc/sys/net/core/somaxconn. Default: 128
+2024-06-07T16:15:58.492+09:00 DEBUG 7579 --- [restartedMain] i.n.channel.MultithreadEventLoopGroup    : -Dio.netty.eventLoopThreads: 40
+2024-06-07T16:15:58.496+09:00 DEBUG 7579 --- [restartedMain] i.netty.util.internal.PlatformDependent  : org.jctools-core.MpscChunkedArrayQueue: available
+2024-06-07T16:15:58.498+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.AbstractByteBuf          : -Dio.netty.buffer.checkAccessible: true
+2024-06-07T16:15:58.499+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.AbstractByteBuf          : -Dio.netty.buffer.checkBounds: true
+2024-06-07T16:15:58.499+09:00 DEBUG 7579 --- [restartedMain] i.n.util.ResourceLeakDetectorFactory     : Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@5327d887
+2024-06-07T16:15:58.507+09:00 DEBUG 7579 --- [restartedMain] io.netty.channel.DefaultChannelId        : -Dio.netty.processId: 7579 (auto-detected)
+2024-06-07T16:15:58.509+09:00 DEBUG 7579 --- [restartedMain] io.netty.channel.DefaultChannelId        : -Dio.netty.machineId: 9c:76:0e:ff:fe:82:c4:a0 (auto-detected)
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.numHeapArenas: 40
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.numDirectArenas: 40
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.pageSize: 8192
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxOrder: 9
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.chunkSize: 4194304
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.smallCacheSize: 256
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.normalCacheSize: 64
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.cacheTrimInterval: 8192
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.useCacheForAllThreads: false
+2024-06-07T16:15:58.516+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+2024-06-07T16:15:58.521+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.allocator.type: pooled
+2024-06-07T16:15:58.521+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.threadLocalDirectBufferSize: 0
+2024-06-07T16:15:58.521+09:00 DEBUG 7579 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.maxThreadLocalCharBufferSize: 16384
+2024-06-07T16:15:58.525+09:00  INFO 7579 --- [restartedMain] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080
+2024-06-07T16:15:58.534+09:00  INFO 7579 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Started DhflourDemo1Application in 1.6 seconds (process running for 1.789)
+2024-06-07T16:16:11.239+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.maxCapacityPerThread: 4096
+2024-06-07T16:16:11.239+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.ratio: 8
+2024-06-07T16:16:11.239+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.chunkSize: 32
+2024-06-07T16:16:11.239+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.blocking: false
+2024-06-07T16:16:11.240+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.batchFastThreadLocalOnly: true
+2024-06-07T16:57:47.411+09:00 DEBUG 7579 --- [reactor-http-kqueue-2] io.netty.buffer.PoolThreadCache          : Freed 7 thread-local buffer(s) from thread: reactor-http-kqueue-2
+2024-06-07T16:57:47.411+09:00 DEBUG 7579 --- [reactor-http-kqueue-3] io.netty.buffer.PoolThreadCache          : Freed 1 thread-local buffer(s) from thread: reactor-http-kqueue-3
+2024-06-07T16:57:48.375+09:00  INFO 10991 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Starting DhflourDemo1Application using Java 17.0.10 with PID 10991 (/Users/chonglye/Documents/Works/projects/dhflour-study-2024-back/api/build/classes/java/main started by chonglye in /Users/chonglye/Documents/Works/projects/dhflour-study-2024-back/api)
+2024-06-07T16:57:48.377+09:00 DEBUG 10991 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Running with Spring Boot v3.2.4, Spring v6.1.5
+2024-06-07T16:57:48.377+09:00  INFO 10991 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : The following 2 profiles are active: "core", "local"
+2024-06-07T16:57:48.398+09:00  INFO 10991 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2024-06-07T16:57:48.399+09:00  INFO 10991 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2024-06-07T16:57:48.732+09:00  INFO 10991 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2024-06-07T16:57:48.737+09:00  INFO 10991 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 3 ms. Found 0 R2DBC repository interfaces.
+2024-06-07T16:57:48.886+09:00  INFO 10991 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2024-06-07T16:57:48.985+09:00  INFO 10991 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 98 ms. Found 1 R2DBC repository interface.
+2024-06-07T16:57:49.147+09:00 DEBUG 10991 --- [restartedMain] i.n.u.i.logging.InternalLoggerFactory    : Using SLF4J as the default logging framework
+2024-06-07T16:57:49.148+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : -Dio.netty.noUnsafe: false
+2024-06-07T16:57:49.148+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : Java version: 17
+2024-06-07T16:57:49.149+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.theUnsafe: available
+2024-06-07T16:57:49.149+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.copyMemory: available
+2024-06-07T16:57:49.149+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : sun.misc.Unsafe.storeFence: available
+2024-06-07T16:57:49.150+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.Buffer.address: available
+2024-06-07T16:57:49.150+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : direct buffer constructor: unavailable: Reflective setAccessible(true) disabled
+2024-06-07T16:57:49.150+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.Bits.unaligned: available, true
+2024-06-07T16:57:49.151+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : jdk.internal.misc.Unsafe.allocateUninitializedArray(int): unavailable: class io.netty.util.internal.PlatformDependent0$7 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @16529dec
+2024-06-07T16:57:49.151+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.PlatformDependent0     : java.nio.DirectByteBuffer.<init>(long, {int,long}): unavailable
+2024-06-07T16:57:49.152+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : sun.misc.Unsafe: available
+2024-06-07T16:57:49.152+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.tmpdir: /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T (java.io.tmpdir)
+2024-06-07T16:57:49.152+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.bitMode: 64 (sun.arch.data.model)
+2024-06-07T16:57:49.152+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : Platform: MacOS
+2024-06-07T16:57:49.153+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.maxDirectMemory: -1 bytes
+2024-06-07T16:57:49.153+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.uninitializedArrayAllocationThreshold: -1
+2024-06-07T16:57:49.153+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.internal.CleanerJava9      : java.nio.ByteBuffer.cleaner(): available
+2024-06-07T16:57:49.153+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : -Dio.netty.noPreferDirect: false
+2024-06-07T16:57:49.195+09:00 DEBUG 10991 --- [restartedMain] i.n.u.internal.InternalThreadLocalMap    : -Dio.netty.threadLocalMap.stringBuilder.initialSize: 1024
+2024-06-07T16:57:49.196+09:00 DEBUG 10991 --- [restartedMain] i.n.u.internal.InternalThreadLocalMap    : -Dio.netty.threadLocalMap.stringBuilder.maxSize: 4096
+2024-06-07T16:57:49.207+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.ResourceLeakDetector       : -Dio.netty.leakDetection.level: simple
+2024-06-07T16:57:49.208+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.ResourceLeakDetector       : -Dio.netty.leakDetection.targetRecords: 4
+2024-06-07T16:57:49.228+09:00 DEBUG 10991 --- [restartedMain] i.n.util.concurrent.GlobalEventExecutor  : -Dio.netty.globalEventExecutor.quietPeriodSeconds: 1
+2024-06-07T16:57:49.264+09:00 DEBUG 10991 --- [restartedMain] c.d.d.c.s.jwt.JWTSymmetricServiceImpl    : Algorithm set to: HS256
+2024-06-07T16:57:49.424+09:00 DEBUG 10991 --- [restartedMain] c.d.d.c.s.jwt.JWTAsymmetricServiceImpl   : Algorithm set to: RS256, Key size set to: 2048
+2024-06-07T16:57:49.578+09:00  INFO 10991 --- [restartedMain] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 3 endpoint(s) beneath base path '/actuator'
+2024-06-07T16:57:49.641+09:00 DEBUG 10991 --- [restartedMain] c.d.dhflourdemo1.api.config.R2dbcConfig  : r2dbcTransactionManager
+2024-06-07T16:57:49.790+09:00  WARN 10991 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : Unable to start LiveReload server
+2024-06-07T16:57:49.818+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.workdir: /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T (io.netty.tmpdir)
+2024-06-07T16:57:49.819+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.deleteLibAfterLoading: true
+2024-06-07T16:57:49.819+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.tryPatchShadedId: true
+2024-06-07T16:57:49.819+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : -Dio.netty.native.detectNativeLibraryDuplicates: true
+2024-06-07T16:57:49.961+09:00 DEBUG 10991 --- [restartedMain] i.n.util.internal.NativeLibraryLoader    : Successfully loaded the library /var/folders/jp/x46wkg_s2kn97yc840thd_ph0000gn/T/libnetty_transport_native_kqueue_aarch_646097095721172474252.dylib
+2024-06-07T16:57:49.962+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.NetUtil                    : -Djava.net.preferIPv4Stack: false
+2024-06-07T16:57:49.963+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.NetUtil                    : -Djava.net.preferIPv6Addresses: false
+2024-06-07T16:57:49.966+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.NetUtilInitializations     : Loopback interface: lo0 (lo0, 0:0:0:0:0:0:0:1%lo0)
+2024-06-07T16:57:49.966+09:00 DEBUG 10991 --- [restartedMain] io.netty.util.NetUtil                    : Failed to get SOMAXCONN from sysctl and file /proc/sys/net/core/somaxconn. Default: 128
+2024-06-07T16:57:49.967+09:00 DEBUG 10991 --- [restartedMain] i.n.channel.MultithreadEventLoopGroup    : -Dio.netty.eventLoopThreads: 40
+2024-06-07T16:57:49.973+09:00 DEBUG 10991 --- [restartedMain] i.netty.util.internal.PlatformDependent  : org.jctools-core.MpscChunkedArrayQueue: available
+2024-06-07T16:57:49.975+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.AbstractByteBuf          : -Dio.netty.buffer.checkAccessible: true
+2024-06-07T16:57:49.975+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.AbstractByteBuf          : -Dio.netty.buffer.checkBounds: true
+2024-06-07T16:57:49.976+09:00 DEBUG 10991 --- [restartedMain] i.n.util.ResourceLeakDetectorFactory     : Loaded default ResourceLeakDetector: io.netty.util.ResourceLeakDetector@33131266
+2024-06-07T16:57:49.985+09:00 DEBUG 10991 --- [restartedMain] io.netty.channel.DefaultChannelId        : -Dio.netty.processId: 10991 (auto-detected)
+2024-06-07T16:57:49.986+09:00 DEBUG 10991 --- [restartedMain] io.netty.channel.DefaultChannelId        : -Dio.netty.machineId: 9c:76:0e:ff:fe:82:c4:a0 (auto-detected)
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.numHeapArenas: 40
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.numDirectArenas: 40
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.pageSize: 8192
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxOrder: 9
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.chunkSize: 4194304
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.smallCacheSize: 256
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.normalCacheSize: 64
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxCachedBufferCapacity: 32768
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.cacheTrimInterval: 8192
+2024-06-07T16:57:49.994+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.cacheTrimIntervalMillis: 0
+2024-06-07T16:57:49.995+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.useCacheForAllThreads: false
+2024-06-07T16:57:49.995+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.PooledByteBufAllocator   : -Dio.netty.allocator.maxCachedByteBuffersPerChunk: 1023
+2024-06-07T16:57:49.999+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.allocator.type: pooled
+2024-06-07T16:57:49.999+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.threadLocalDirectBufferSize: 0
+2024-06-07T16:57:49.999+09:00 DEBUG 10991 --- [restartedMain] io.netty.buffer.ByteBufUtil              : -Dio.netty.maxThreadLocalCharBufferSize: 16384
+2024-06-07T16:57:50.003+09:00  INFO 10991 --- [restartedMain] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8080
+2024-06-07T16:57:50.015+09:00  INFO 10991 --- [restartedMain] c.d.d.api.DhflourDemo1Application        : Started DhflourDemo1Application in 1.869 seconds (process running for 2.061)
+2024-06-07T16:57:56.183+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.maxCapacityPerThread: 4096
+2024-06-07T16:57:56.184+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.ratio: 8
+2024-06-07T16:57:56.184+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.chunkSize: 32
+2024-06-07T16:57:56.184+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.blocking: false
+2024-06-07T16:57:56.184+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.util.Recycler                   : -Dio.netty.recycler.batchFastThreadLocalOnly: true
+2024-06-07T17:20:43.402+09:00 DEBUG 10991 --- [reactor-http-kqueue-2] io.netty.buffer.PoolThreadCache          : Freed 7 thread-local buffer(s) from thread: reactor-http-kqueue-2

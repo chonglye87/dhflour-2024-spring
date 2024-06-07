@@ -25,7 +25,6 @@ spring:
     web-application-type: reactive
     allow-bean-definition-overriding: true
 
-
 # 로컬 환경 설정
 ---
 
@@ -35,6 +34,7 @@ spring:
       on-profile: local
     import:
       - classpath:application-r2dbc-local.properties
+      - classpath:application-log-local.properties
 
 # 개발계 환경 설정
 ---
@@ -45,7 +45,7 @@ spring:
       on-profile: dev
     import:
       - classpath:application-r2dbc-dev.properties
-
+      - classpath:application-log-dev.properties
 # 운영계 환경 설정
 ---
 
@@ -55,3 +55,4 @@ spring:
       on-profile: prod
     import:
       - classpath:application-r2dbc-prod.properties
+      - classpath:application-log-prod.properties

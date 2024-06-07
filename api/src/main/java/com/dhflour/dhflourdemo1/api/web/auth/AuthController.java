@@ -37,6 +37,7 @@ import reactor.core.publisher.Mono;
 public class AuthController {
 
     final private static UnauthorizedException ERROR_USER_NOT_FOUND = new UnauthorizedException("User not found");
+    final private static UnauthorizedException ERROR_EXPIRED_REFRESH_TOKEN = new UnauthorizedException("Expired refresh token");
 
     @Autowired
     private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
@@ -80,13 +81,13 @@ public class AuthController {
                 .filter(body -> {
                     final Claims claims = jwtService.verifyToken(body.getRefreshToken());
                     return !jwtService.isTokenExpired(body.getRefreshToken()) && NumberUtils.isCreatable(claims.getId());
-                }).switchIfEmpty(Mono.error(new UnauthorizedException("Expired refresh token")))
+                }).switchIfEmpty(Mono.error(ERROR_EXPIRED_REFRESH_TOKEN))
                 .flatMap(body -> {
                     final String refreshToken = body.getRefreshToken();
                     final Claims claims = jwtService.verifyToken(refreshToken);
                     return userAPIService.varifyRefreshToken(refreshToken, exchange)
                             .filter(Boolean::booleanValue)
-                            .switchIfEmpty(Mono.error(new UnauthorizedException("Expired refresh token")))
+                            .switchIfEmpty(Mono.error(ERROR_EXPIRED_REFRESH_TOKEN))
                             .then(userAPIService.getActiveUser(Long.parseLong(claims.getId())));
                 }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND))
                 .flatMap(rUser -> {
