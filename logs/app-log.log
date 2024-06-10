@@ -1762,3 +1762,4 @@ Caused by: io.netty.channel.StacklessClosedChannelException: null
 2024-06-10T14:07:01.043+09:00 DEBUG 33253 --- [parallel-2] c.d.d.api.web.InitWebFluxController      : Hello, OpenTelemetry
 2024-06-10T14:07:01.772+09:00 DEBUG 33253 --- [parallel-3] c.d.d.api.web.InitWebFluxController      : Hello, OpenTelemetry
 2024-06-10T14:07:01.966+09:00 DEBUG 33253 --- [parallel-4] c.d.d.api.web.InitWebFluxController      : Hello, OpenTelemetry
+2024-06-10T18:00:17.878+09:00  INFO 33253 --- [parallel-3] o.springdoc.api.AbstractOpenApiResource  : Init duration for springdoc-openapi is: 210 ms

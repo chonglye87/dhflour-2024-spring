@@ -1,16 +1,19 @@
-package com.dhflour.dhflourdemo1.batch;
+package com.dhflour.dhflourdemo1.batch.web;
 
 import com.dhflour.dhflourdemo1.core.service.TestService;
 import com.dhflour.dhflourdemo1.core.service.mail.MailService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestController
 public class ProcessEnvController {
 
@@ -22,7 +25,6 @@ public class ProcessEnvController {
 
     @Autowired
     private TestService testService;
-
 
     @Autowired
     private MailService mailService;

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    container_name: zookeeper
+    ports:
+      - "2181:2181"  # Zookeeper의 기본 포트 2181을 호스트와 컨테이너에서 모두 열어줍니다.
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181  # 클라이언트가 접속할 Zookeeper 포트를 설정합니다.
+      ZOOKEEPER_TICK_TIME: 2000  # Zookeeper의 기본 틱 타임을 설정합니다 (밀리초 단위).
+
+  kafka:
+    image: wurstmeister/kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092"  # Kafka의 기본 포트 9092를 호스트와 컨테이너에서 모두 열어줍니다.
+    environment:
+      KAFKA_BROKER_ID: 1  # Kafka 브로커의 고유 ID를 설정합니다.
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181  # Zookeeper의 주소와 포트를 설정하여 Kafka가 Zookeeper에 연결할 수 있도록 합니다.
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092  # Kafka 브로커가 수신할 주소와 포트를 설정합니다.
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092  # Kafka 클라이언트가 접속할 수 있는 Kafka 브로커의 주소를 설정합니다.
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT  # Kafka 브로커의 리스너 보안 프로토콜을 설정합니다.
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT  # 브로커 간 통신에 사용할 리스너 이름을 설정합니다.
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1  # 오프셋 토픽의 복제 계수를 설정합니다. (단일 브로커 환경이므로 1로 설정)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock  # 호스트의 Docker 소켓 파일을 컨테이너에 마운트하여 컨테이너가 Docker 데몬과 통신할 수 있도록 합니다.
+    depends_on:
+      - zookeeper

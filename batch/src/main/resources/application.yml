@@ -1,6 +1,6 @@
 application:
-  id: 'HyperX_API_App'
-  title: 'API Application'
+  id: 'HyperX_Batch_App'
+  title: 'Batch Application'
   version: 1.0.0
 
 server:
@@ -23,4 +23,6 @@ spring:
       - classpath:application-apidoc.properties
       - classpath:application-logger.properties
       - classpath:application-jwt.yml
+      - classpath:application-batch.yml
+      - classpath:application-kafka.yml
 

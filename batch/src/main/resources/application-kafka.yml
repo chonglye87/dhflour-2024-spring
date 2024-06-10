@@ -1,0 +1,13 @@
+spring:
+  kafka:
+    bootstrap-servers: localhost:9092 # Kafka 서버 주소
+    consumer:
+      group-id: app_push_group # 컨슈머 그룹 ID
+      auto-offset-reset: earliest # 오프셋 초기화 설정
+      max-poll-records: 1000 # 각 폴링당 최대 레코드 수
+      fetch-min-size: 50KB # 서버로부터 가져올 최소 데이터 양 (바이트)
+      fetch-max-wait: 500ms # 서버로부터 데이터 가져오기 위한 최대 대기 시간 (밀리초)
+      heartbeat-interval: 1s # 컨슈머의 하트비트 주기 (밀리초)
+    listener:
+      ack-mode: manual # 수동 확인 모드 설정
+      concurrency: 10 # 동시 처리 스레드 수
