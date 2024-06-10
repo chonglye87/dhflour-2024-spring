@@ -28,7 +28,7 @@ public class PushKafkaConsumerServiceImpl implements PushKafkaConsumerService {
     @Autowired
     private FcmService fcmService;
 
-    private final ExecutorService executorService = Executors.newFixedThreadPool(100);
+    private final ExecutorService executorService = Executors.newFixedThreadPool(1000); // 이것에 따라 동작 처리
 
     @KafkaListener(topics = PushBatchConfig.TOPIC, groupId = "app_push_group", concurrency = "10")
     public void listen(@Payload String message, Acknowledgment ack) {
