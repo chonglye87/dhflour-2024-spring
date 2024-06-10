@@ -25,6 +25,26 @@ spring:
     web-application-type: reactive
     allow-bean-definition-overriding: true
 
+#logging:
+#  config: classpath:logback-spring.xml
+#management:
+#  tracing:
+#    enabled: true
+#    sampling:
+#      probability: 1.0
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#logging:
+#  pattern:
+#    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
+#  include-application-name: false
+#otel:
+#  exporter:
+#    otlp:
+#      endpoint: "http://localhost:4317"
+
 # 로컬 환경 설정
 ---
 

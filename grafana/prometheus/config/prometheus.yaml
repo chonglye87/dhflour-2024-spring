@@ -27,3 +27,11 @@ scrape_configs:
 
     static_configs:
       - targets: [ "host.docker.internal:8080" ]  # 스크랩할 대상 목록입니다. 도커일경우 localhost 대신 host.docker.internal 사용
+
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'tempo'
+    static_configs:
+      - targets: ['tempo:3200']
