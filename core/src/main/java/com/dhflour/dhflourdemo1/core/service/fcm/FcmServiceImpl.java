@@ -33,6 +33,7 @@ public class FcmServiceImpl implements FcmService {
         log.info("= Sending FCM title: {}", title);
         log.info("= Sending FCM body: {}", body);
         log.info("==========================================");
+        // Device 만료에 대한 예외 처리
         throw new RuntimeException("Not implemented");
     }
 }
