@@ -8,13 +8,22 @@ import org.springframework.batch.core.JobExecutionListener;
 @Slf4j
 public class JobCompletionNotificationListener implements JobExecutionListener {
 
+    private long startTime;
+    private long endTime;
+
     @Override
     public void beforeJob(JobExecution jobExecution) {
-        log.info("### Job started...");
+        startTime = System.currentTimeMillis();
+        log.info("Job Started at: {}", startTime);
     }
 
     @Override
     public void afterJob(JobExecution jobExecution) {
-        log.info("### Job finished...");
+        endTime = System.currentTimeMillis();
+        log.info("Job Ended at: {}", endTime);
+        long totalTime = endTime - startTime;
+        log.info("Total Time Taken: {} ms", totalTime);
+        startTime = 0;
+        endTime = 0;
     }
 }

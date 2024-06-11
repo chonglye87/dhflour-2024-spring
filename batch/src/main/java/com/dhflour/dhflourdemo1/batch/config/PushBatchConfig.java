@@ -26,6 +26,10 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.retry.annotation.EnableRetry;
+import org.springframework.retry.support.RetryTemplate;
+import org.springframework.retry.backoff.FixedBackOffPolicy;
+import org.springframework.retry.policy.SimpleRetryPolicy;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,6 +44,24 @@ public class PushBatchConfig {
 
     @Autowired
     private Gson gson;
+
+    @Bean
+    public RetryTemplate retryTemplate() {
+        RetryTemplate retryTemplate = new RetryTemplate();
+
+        // Backoff Policy 설정 (재시도 간격 설정)
+        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
+        backOffPolicy.setBackOffPeriod(2000); // 2초 간격
+
+        // Retry Policy 설정 (재시도 횟수 설정)
+        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
+        retryPolicy.setMaxAttempts(3); // 최대 3번 재시도
+
+        retryTemplate.setBackOffPolicy(backOffPolicy);
+        retryTemplate.setRetryPolicy(retryPolicy);
+
+        return retryTemplate;
+    }
 
     @Bean
     public Job pushNotificationJob(JobRepository jobRepository, Step pushNotificationStep) {
@@ -60,41 +82,21 @@ public class PushBatchConfig {
                 .tasklet(pushNotificationTasklet, transactionManager)
                 .build();
     }
-
-//    @Bean
-//    public Tasklet pushNotificationTasklet(PushNotificationEntityRepository repository, KafkaTemplate<String, String> kafkaTemplate) {
-//        return (contribution, chunkContext) -> {
-//            repository.findAll().forEach(notification -> {
-//                try {
-//                    String message = gson.toJson(Map.of(
-//                            "recipient", notification.getRecipient(),
-//                            "message", notification.getMessage()
-//                    ));
-//                    kafkaTemplate.send(TOPIC, message);
-//                } catch (Exception e) {
-//                    log.error("Error sending message to Kafka", e);
-//                }
-//            });
-//            return RepeatStatus.FINISHED;
-//        };
-//    }
-
     @Bean
     @StepScope
     public Tasklet pushNotificationTasklet(PushNotificationEntityRepository repository, KafkaTemplate<String, String> kafkaTemplate) {
         return (StepContribution contribution, ChunkContext chunkContext) -> {
             log.debug("repository.count() : {}", repository.count());
             // repository.findAll().forEach(notification -> { // Original code commented out
-            for (int i = 0; i < 100000; i++) { // Loop for generating 100,000 virtual data entries
+            for (int i = 0; i < 100; i++) { // Loop for generating 100,000 virtual data entries
                 try {
-                    String recipient = "recipient" + i + "@example.com"; // Example recipient
-                    String notificationMessage = "This is a test message #" + i; // Example message
+                    final String recipient = "recipient" + i + "@example.com"; // Example recipient
+                    final String notificationMessage = "This is a test message #" + i; // Example message
 
-                    String message = gson.toJson(Map.of(
+                    final String message = gson.toJson(Map.of(
                             "recipient", recipient,
                             "message", notificationMessage
                     ));
-
                     kafkaTemplate.send(TOPIC, message);
                 } catch (Exception e) {
                     log.error("Error sending message to Kafka", e);
