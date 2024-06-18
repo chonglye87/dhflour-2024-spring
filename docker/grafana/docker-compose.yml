@@ -59,3 +59,10 @@ services:
     command:
       - '-config.file=/mnt/config/tempo.yaml'
     restart: always
+
+  zipkin:
+    image: openzipkin/zipkin
+    container_name: zipkin
+    ports:
+      - "9411:9411"
+    restart: always

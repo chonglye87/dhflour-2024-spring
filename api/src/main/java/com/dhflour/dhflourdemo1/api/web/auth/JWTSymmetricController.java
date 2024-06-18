@@ -7,6 +7,7 @@ import com.dhflour.dhflourdemo1.api.types.jwt.UserSampleBody;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 // 대칭키용 JWT
+@Tag(name = "[샘플] 대칭키 JWT API")
 @RestController
 @RequestMapping("/api/symmetric/jwt")
 public class JWTSymmetricController {

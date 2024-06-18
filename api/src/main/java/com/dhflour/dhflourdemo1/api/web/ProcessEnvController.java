@@ -1,8 +1,11 @@
 package com.dhflour.dhflourdemo1.api.web;
 
+import brave.sampler.Sampler;
 import com.dhflour.dhflourdemo1.api.service.TestAPIService;
 import com.dhflour.dhflourdemo1.core.service.TestService;
 import com.dhflour.dhflourdemo1.core.service.mail.MailService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
+@Tag(name = "Process 상태 API", description = "Process 상태에 대한 API")
 @RestController
 public class ProcessEnvController {
 
@@ -32,6 +37,9 @@ public class ProcessEnvController {
     @Autowired
     private MailService mailService;
 
+    @Autowired
+    private Sampler sampler;
+
 
     @GetMapping("/api/v1/env")
     public ResponseEntity<?> env() {
@@ -41,6 +49,7 @@ public class ProcessEnvController {
         result.put("core", testService.test());
         result.put("api", testAPIService.test());
         result.put("mail", mailService.getText());
+        result.put("sampler", sampler);
         result.put("prometheusEnv", prometheusEnv);
         return ResponseEntity.ok(result);
     }

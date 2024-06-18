@@ -11,14 +11,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//    implementation 'io.micrometer:micrometer-tracing-bridge-otel'
-//    implementation 'io.opentelemetry:opentelemetry-exporter-zipkin'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-
-//    implementation 'io.opentelemetry:opentelemetry-api:1.39.0'
-//    implementation 'io.opentelemetry:opentelemetry-sdk:1.39.0'
-//    implementation 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure:1.39.0'
-//    implementation 'io.opentelemetry:opentelemetry-exporter-otlp:1.39.0'
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
+    implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
+    implementation 'io.opentelemetry:opentelemetry-exporter-zipkin'
+    implementation 'org.aspectj:aspectjweaver'
 
     implementation 'org.springframework.data:spring-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'

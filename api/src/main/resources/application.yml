@@ -1,9 +1,10 @@
 application:
   id: 'HyperX_API_App'
-  title: 'API Application'
   version: 1.0.0
 
 spring:
+  application:
+    name: API Application
   profiles:
     # process env (local,dev,prod) 설정
     # active: dev

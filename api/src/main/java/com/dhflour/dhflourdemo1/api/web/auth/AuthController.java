@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -33,6 +34,7 @@ import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequestMapping(value = "/api/v1/authenticate")
+@Tag(name = "인증 API", description = "사용자 인증 및 토큰 관리를 위한 API")
 @RestController
 public class AuthController {
 
