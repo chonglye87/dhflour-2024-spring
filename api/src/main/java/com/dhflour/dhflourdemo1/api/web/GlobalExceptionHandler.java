@@ -5,6 +5,7 @@ import com.dhflour.dhflourdemo1.core.types.error.*;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
@@ -59,6 +60,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public Mono<Void> handleUnauthorizedException(ServerWebExchange exchange, UnauthorizedException ex) {
+        return handleException(exchange, HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public Mono<Void> handleUsernameNotFoundException(ServerWebExchange exchange, UsernameNotFoundException ex) {
         return handleException(exchange, HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 

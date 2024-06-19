@@ -34,10 +34,5 @@ dependencies {
 
 bootRun {
     mainClass = 'com.dhflour.dhflourdemo1.api.DhflourDemo1Application'
-//    jvmArgs = [
-//            "-javaagent:${projectDir}/opentelemetry/opentelemetry-javaagent.jar",
-//            "-Dio.opentelemetry.javaagent.slf4j.simpleLogger.log.level=debug"
-//    ]
-//    environment 'OTEL_TRACES_EXPORTER', 'otlp'
-//    environment 'OTEL_EXPORTER_OTLP_ENDPOINT', 'http://localhost:4317'
+//    args = ['--spring.profiles.active=loki-enabled']
 }

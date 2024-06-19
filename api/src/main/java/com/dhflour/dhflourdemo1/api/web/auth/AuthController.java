@@ -61,6 +61,7 @@ public class AuthController {
                 .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
                 .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()))).flatMap(authentication -> {
                     try {
+                        log.debug("authentication : {}", authentication);
                         final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
                         final MyUserDetails myUserDetails = userDetails.toMyUserDetails();
                         final String accessToken = jwtService.generateToken(myUserDetails);

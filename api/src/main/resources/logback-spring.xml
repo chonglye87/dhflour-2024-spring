@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <!-- Spring Boot의 기본 Logback 설정 파일을 포함합니다. -->
     <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <!-- Spring 애플리케이션의 이름을 가져오는 속성을 설정합니다. -->
     <springProperty scope="context" name="appName" source="spring.application.name"/>
 
-    <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
-        <http>
-            <url>http://localhost:3100/loki/api/v1/push</url>
-        </http>
-        <format>
-            <label>
-                <pattern>app=${appName},host=${HOSTNAME},traceID=%X{traceId:-NONE},level=%level</pattern>
-            </label>
-            <message>
-                <pattern>${FILE_LOG_PATTERN}</pattern>
-            </message>
-            <sortByTime>true</sortByTime>
-        </format>
-    </appender>
+    <!-- LOKI appender를 특정 프로파일에서만 활성화 -->
+    <springProfile name="loki-enabled">
+        <appender name="LOKI" class="com.github.loki4j.logback.Loki4jAppender">
+            <http>
+                <url>http://localhost:3100/loki/api/v1/push</url>
+            </http>
+            <format>
+                <label>
+                    <pattern>app=${appName},host=${HOSTNAME},traceID=%X{traceId:-NONE},level=%level</pattern>
+                </label>
+                <message>
+                    <pattern>${FILE_LOG_PATTERN}</pattern>
+                </message>
+                <sortByTime>true</sortByTime>
+            </format>
+        </appender>
+    </springProfile>
 
     <root level="INFO">
-        <appender-ref ref="LOKI"/>
+        <appender-ref ref="CONSOLE"/> <!-- 기본 로그 출력을 콘솔로 설정 -->
+        <!-- loki-enabled 프로파일이 활성화된 경우에만 LOKI appender를 추가 -->
+        <springProfile name="loki-enabled">
+            <appender-ref ref="LOKI"/>
+        </springProfile>
     </root>
 </configuration>
