@@ -10,13 +10,14 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'io.micrometer:micrometer-tracing-bridge-brave'
-    implementation 'io.zipkin.reporter2:zipkin-reporter-brave'
-    implementation 'com.github.loki4j:loki-logback-appender:1.5.1'
-    implementation 'io.opentelemetry:opentelemetry-exporter-zipkin'
-    implementation 'org.aspectj:aspectjweaver'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator' // Spring Boot Actuator: 애플리케이션 모니터링 및 관리를 위한 프로덕션 준비 기능 제공
+    implementation 'io.micrometer:micrometer-registry-prometheus' // Micrometer Prometheus Registry: Micrometer를 Prometheus 백엔드로 설정
+    implementation 'io.micrometer:micrometer-tracing-bridge-brave' // Micrometer Tracing Bridge Brave: Micrometer의 추적 기능을 Brave 라이브러리와 통합
+    implementation 'io.zipkin.reporter2:zipkin-reporter-brave' // Zipkin Reporter Brave: Brave 라이브러리를 사용하여 Zipkin에 추적 데이터를 전송
+    implementation 'com.github.loki4j:loki-logback-appender:1.5.1' // Loki Logback Appender: Logback의 로그를 Grafana Loki에 전송
+    implementation 'io.opentelemetry:opentelemetry-exporter-zipkin' // OpenTelemetry Zipkin Exporter: OpenTelemetry 추적 데이터를 Zipkin에 전송
+    implementation 'org.aspectj:aspectjweaver' // AspectJ Weaver: AOP(Aspect-Oriented Programming)를 위해 컴파일, 로드 또는 런타임 시 코드에 애스펙트 삽입
+
 
     implementation 'org.springframework.data:spring-data-r2dbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
