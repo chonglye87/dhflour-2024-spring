@@ -54,7 +54,7 @@ spring:
       on-profile: local
     import:
       - classpath:application-r2dbc-local.properties
-      - classpath:application-log-local.properties
+      - classpath:application-log-local.yml
 
 # 개발계 환경 설정
 ---
@@ -65,7 +65,7 @@ spring:
       on-profile: dev
     import:
       - classpath:application-r2dbc-dev.properties
-      - classpath:application-log-dev.properties
+      - classpath:application-log-dev.yml
 # 운영계 환경 설정
 ---
 
@@ -75,4 +75,4 @@ spring:
       on-profile: prod
     import:
       - classpath:application-r2dbc-prod.properties
-      - classpath:application-log-prod.properties
+      - classpath:application-log-prod.yml

@@ -1,0 +1,40 @@
+logging:
+  file:
+    name: "../logs/app-log.log"
+  level:
+    com:
+      dhflour:
+        dhflourdemo1:
+          api: DEBUG
+      github:
+        loki4j: OFF
+
+management:
+  endpoints:
+    enabled-by-default: false
+  endpoint:
+    health:
+      enabled: false
+    info:
+      enabled: false
+    metrics:
+      enabled: false
+    prometheus:
+      enabled: false
+  tracing:
+    enabled: false
+
+zipkin:
+  enabled: false
+spring:
+  zipkin:
+    enabled: false
+
+otel:
+  exporter:
+    zipkin:
+      enabled: false
+
+aspectj:
+  weaving:
+    enabled: false
