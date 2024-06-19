@@ -6,6 +6,7 @@ import com.dhflour.dhflourdemo1.core.types.error.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.server.ServerWebExchange;
 import org.springframework.web.server.WebExceptionHandler;
@@ -36,7 +37,7 @@ public class GlobalExceptionHandlingConfiguration implements WebExceptionHandler
         exceptionHandlers.put(NotFoundException.class, (exchange, ex) -> globalExceptionHandler.handleNotFoundException(exchange, (NotFoundException) ex));
         exceptionHandlers.put(TooManyRequestsException.class, (exchange, ex) -> globalExceptionHandler.handleTooManyRequestsException(exchange, (TooManyRequestsException) ex));
         exceptionHandlers.put(UnauthorizedException.class, (exchange, ex) -> globalExceptionHandler.handleUnauthorizedException(exchange, (UnauthorizedException) ex));
-        exceptionHandlers.put(UsernameNotFoundException.class, (exchange, ex) -> globalExceptionHandler.handleUsernameNotFoundException(exchange, (UsernameNotFoundException) ex));
+        exceptionHandlers.put(BadCredentialsException.class, (exchange, ex) -> globalExceptionHandler.handleBadCredentialsException(exchange, (BadCredentialsException) ex));
         exceptionHandlers.put(ForbiddenException.class, (exchange, ex) -> globalExceptionHandler.handleForbiddenException(exchange, (ForbiddenException) ex));
         exceptionHandlers.put(Exception.class, (exchange, ex) -> globalExceptionHandler.handleException(exchange, (Exception) ex));
     }

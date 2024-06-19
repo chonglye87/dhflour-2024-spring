@@ -20,7 +20,6 @@ public class MyReactiveUserDetailsService implements ReactiveUserDetailsService 
     @Autowired
     private UserAPIService userAPIService;
 
-
     @Override
     public Mono<UserDetails> findByUsername(String username) {
         return userAPIService.getActiveUser(username)
@@ -41,6 +40,6 @@ public class MyReactiveUserDetailsService implements ReactiveUserDetailsService 
                             authorities);
 
                     return Mono.just(userDetails);
-                }).switchIfEmpty(Mono.error(new UsernameNotFoundException("User not found")));
+                });
     }
 }
