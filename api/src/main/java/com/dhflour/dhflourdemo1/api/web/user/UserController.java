@@ -10,4 +10,5 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "회원 API", description = "회원가입 및 회원정보 조회에 대한 API")
 @RestController
 public class UserController {
+
 }

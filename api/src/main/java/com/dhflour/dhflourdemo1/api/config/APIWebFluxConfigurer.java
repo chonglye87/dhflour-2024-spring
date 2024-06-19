@@ -2,6 +2,8 @@ package com.dhflour.dhflourdemo1.api.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
+import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
@@ -26,5 +28,7 @@ public class APIWebFluxConfigurer implements WebFluxConfigurer {
     @Override
     public void configureArgumentResolvers(ArgumentResolverConfigurer configurer) {
         configurer.addCustomResolver(currentUserArgumentResolver);
+        configurer.addCustomResolver(new ReactivePageableHandlerMethodArgumentResolver());
+        configurer.addCustomResolver(new ReactiveSortHandlerMethodArgumentResolver());
     }
 }
