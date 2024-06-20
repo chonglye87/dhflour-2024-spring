@@ -1,5 +1,6 @@
 package com.dhflour.dhflourdemo1.api.config;
 
+import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import io.r2dbc.spi.ConnectionFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -10,6 +11,9 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.core.DatabaseClient;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.ReactiveTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.data.domain.ReactiveAuditorAware;
@@ -20,12 +24,26 @@ import reactor.core.publisher.Mono;
 @EnableR2dbcAuditing
 @EnableR2dbcRepositories
 @EnableTransactionManagement
-public class R2dbcConfig {
+public class R2dbcConfig implements ReactiveAuditorAware<Long> {
 
-    @Bean
-    public ReactiveAuditorAware<String> auditorProvider() {
-        // 실제로는 현재 인증된 사용자를 반환하도록 구현해야 합니다.
-        return () -> Mono.just("system");
+    /**
+     * 등록/수정 사용자 계정 access token 으로 추출
+     * @return 등록/수정 사용자 ID
+     */
+    @Override
+    public Mono<Long> getCurrentAuditor() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .map(authentication -> {
+                    if (authentication == null || !authentication.isAuthenticated()) {
+                        return 0L;
+                    }
+                    Object principal = authentication.getPrincipal();
+                    if (principal instanceof ReactiveUserDetails) {
+                        return ((ReactiveUserDetails) principal).getId();
+                    }
+                    return 0L;
+                });
     }
 
     // ConnectionFactory는 R2DBC를 통해 데이터베이스에 연결하기 위한 팩토리입니다.

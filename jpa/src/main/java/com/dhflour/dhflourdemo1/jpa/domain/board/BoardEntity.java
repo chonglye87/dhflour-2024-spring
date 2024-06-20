@@ -1,5 +1,6 @@
 package com.dhflour.dhflourdemo1.jpa.domain.board;
 
+import com.dhflour.dhflourdemo1.jpa.domain.AbstractEntity;
 import com.dhflour.dhflourdemo1.jpa.domain.category.CategoryEntity;
 // import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
@@ -15,8 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "Board")
-//@Schema(description = "게시판 엔티티, 게시물 정보를 포함")
-public class BoardEntity {
+public class BoardEntity extends AbstractEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +31,6 @@ public class BoardEntity {
 //    @Schema(description = "게시물 내용", example = "", readOnly = true)
     private String content;
 
-    @Column(nullable = false, updatable = false)
-//    @Schema(description = "생성 시간", example = "2023-10-01T12:00:00", readOnly = true)
-    private LocalDateTime createdAt = LocalDateTime.now();
-
-    @Column(nullable = false)
-//    @Schema(description = "마지막 업데이트 시간", example = "2023-10-02T12:00:00", readOnly = true)
-    private LocalDateTime updatedAt = LocalDateTime.now();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -52,5 +45,15 @@ public class BoardEntity {
     public BoardEntity(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    @Override
+    public void delete() {
+        
+    }
+
+    @Override
+    public void lazy() {
+
     }
 }

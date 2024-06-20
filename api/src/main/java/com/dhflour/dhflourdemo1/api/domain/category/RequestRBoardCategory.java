@@ -3,8 +3,6 @@ package com.dhflour.dhflourdemo1.api.domain.category;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 @Data
 public class RequestRBoardCategory {
 

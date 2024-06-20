@@ -39,6 +39,7 @@ public class GlobalExceptionHandlingConfiguration implements WebExceptionHandler
         exceptionHandlers.put(UnauthorizedException.class, (exchange, ex) -> globalExceptionHandler.handleUnauthorizedException(exchange, (UnauthorizedException) ex));
         exceptionHandlers.put(BadCredentialsException.class, (exchange, ex) -> globalExceptionHandler.handleBadCredentialsException(exchange, (BadCredentialsException) ex));
         exceptionHandlers.put(ForbiddenException.class, (exchange, ex) -> globalExceptionHandler.handleForbiddenException(exchange, (ForbiddenException) ex));
+        exceptionHandlers.put(NoContentException.class, (exchange, ex) -> globalExceptionHandler.handleNoContentException(exchange, (NoContentException) ex));
         exceptionHandlers.put(Exception.class, (exchange, ex) -> globalExceptionHandler.handleException(exchange, (Exception) ex));
     }
 

@@ -1,5 +1,6 @@
 package com.dhflour.dhflourdemo1.jpa.domain.push;
 
+import com.dhflour.dhflourdemo1.jpa.domain.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PushNotification")
-public class PushNotificationEntity {
+public class PushNotificationEntity extends AbstractEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,4 +20,13 @@ public class PushNotificationEntity {
 
     private String recipient;
 
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public void lazy() {
+
+    }
 }

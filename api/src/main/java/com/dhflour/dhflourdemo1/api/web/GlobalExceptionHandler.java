@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
@@ -52,6 +51,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public Mono<Void> handleNotFoundException(ServerWebExchange exchange, NotFoundException ex) {
         return handleException(exchange, HttpStatus.NOT_FOUND,ex.getMessage());
+    }
+
+    @ExceptionHandler(NoContentException.class)
+    public Mono<Void> handleNoContentException(ServerWebExchange exchange, NoContentException ex) {
+        return handleException(exchange, HttpStatus.NO_CONTENT,ex.getMessage());
     }
 
     @ExceptionHandler(TooManyRequestsException.class)

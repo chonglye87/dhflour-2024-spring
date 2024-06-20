@@ -1,9 +1,9 @@
 package com.dhflour.dhflourdemo1.api.web.board;
 
+import com.dhflour.dhflourdemo1.api.domain.board.BoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.domain.category.RBoardCategory;
 import com.dhflour.dhflourdemo1.api.domain.category.RequestRBoardCategory;
 import com.dhflour.dhflourdemo1.api.service.category.CategoryAPIService;
-import com.dhflour.dhflourdemo1.api.types.board.BoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +18,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -45,12 +47,8 @@ public class BoardCategoryController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                       @Parameter(hidden = true) Sort sort) {
-        log.info("getBoardCategories(sort: {})", sort);
         return AuthUtils.required(userDetails)
-                .flatMapMany(user -> {
-                    log.info("Authenticated user: {}", user.getUsername());
-                    return categoryAPIService.list(sort);
-                });
+                .flatMapMany(user -> categoryAPIService.list(sort));
     }
 
     @Operation(summary = "[board-category-2] 게시판 카테고리 상세 조회 (Get by ID)",
@@ -62,12 +60,8 @@ public class BoardCategoryController {
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> getBoardCategoryById(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                         @PathVariable Long id) {
-        log.info("getBoardCategoryById(id: {})", id);
         return AuthUtils.required(userDetails)
-                .flatMap(user -> {
-                    log.info("Authenticated user: {}", user.getUsername());
-                    return categoryAPIService.getById(id);
-                });
+                .flatMap(user -> categoryAPIService.getById(id));
     }
 
     @Operation(summary = "[board-category-3] 게시판 카테고리 생성 (Create)",
@@ -77,14 +71,15 @@ public class BoardCategoryController {
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RequestRBoardCategory.class)))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Mono<?> createBoardCategory(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                                       @RequestBody RequestRBoardCategory category) {
-        log.info("createBoardCategory(category: {})", category);
+    public Mono<ResponseEntity<RBoardCategory>> createBoardCategory(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
+                                                            @RequestBody RequestRBoardCategory category) {
         return AuthUtils.required(userDetails)
-                .flatMap(user -> {
-                    log.info("Authenticated user: {}", user.getUsername());
-                    return categoryAPIService.create(category.toEntity());
-                });
+                .flatMap(user -> categoryAPIService.create(category.toEntity()))
+                .map(createdEntity -> ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(createdEntity))
+                .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
     }
 
     @Operation(summary = "[board-category-4] 게시판 카테고리 수정 (Update)",
@@ -92,17 +87,13 @@ public class BoardCategoryController {
             operationId = "updateBoardCategory", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "성공적으로 카테고리가 수정됨",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RBoardCategory.class)))
+                    schema = @Schema(implementation = RequestRBoardCategory.class)))
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> updateBoardCategory(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                        @PathVariable Long id,
-                                       @RequestBody RBoardCategory category) {
-        log.info("updateBoardCategory(id: {}, category: {})", id, category);
+                                       @RequestBody RequestRBoardCategory category) {
         return AuthUtils.required(userDetails)
-                .flatMap(user -> {
-                    log.info("Authenticated user: {}", user.getUsername());
-                    return categoryAPIService.update(id, category);
-                });
+                .flatMap(user -> categoryAPIService.update(id, category.toEntity()));
     }
 
     @Operation(summary = "[board-category-5] 게시판 카테고리 삭제 (Delete)",
@@ -112,11 +103,7 @@ public class BoardCategoryController {
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> deleteBoardCategory(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                        @PathVariable Long id) {
-        log.info("deleteBoardCategory(id: {})", id);
         return AuthUtils.required(userDetails)
-                .flatMap(user -> {
-                    log.info("Authenticated user: {}", user.getUsername());
-                    return categoryAPIService.delete(id);
-                });
+                .flatMap(user -> categoryAPIService.delete(id));
     }
 }
