@@ -40,8 +40,8 @@ import reactor.core.publisher.Mono;
 @RestController
 public class AuthController {
 
-    final private static UnauthorizedException ERROR_USER_NOT_FOUND = new UnauthorizedException("User not found");
-    final private static UnauthorizedException ERROR_EXPIRED_REFRESH_TOKEN = new UnauthorizedException("Expired refresh token");
+    public final static UnauthorizedException ERROR_USER_NOT_FOUND = new UnauthorizedException("User not found");
+    public final static UnauthorizedException ERROR_EXPIRED_REFRESH_TOKEN = new UnauthorizedException("Expired refresh token");
 
     @Autowired
     private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
@@ -61,20 +61,9 @@ public class AuthController {
                 .switchIfEmpty(Mono.error(new BadRequestException("Email is empty")))
                 .filter(request -> StringUtils.isNotEmpty(request.getPassword()))
                 .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
-                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()))).flatMap(authentication -> {
-                    try {
-                        log.debug("authentication : {}", authentication);
-                        final ReactiveUserDetails userDetails = (ReactiveUserDetails) authentication.getPrincipal();
-                        final MyUserDetails myUserDetails = userDetails.toMyUserDetails();
-                        final String accessToken = jwtService.generateToken(myUserDetails);
-                        final String refreshToken = jwtService.generateRefreshToken(myUserDetails);
-                        userAPIService.saveRefreshToken(refreshToken, exchange); // TODO 저장토큰 비교 및 검증 & 문제 없으면 기존 토큰 삭제
-                        return userAPIService.getActiveUser(myUserDetails.getEmail()).map(user -> new AuthenticationResponse(accessToken, refreshToken, user)).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND));
-                    } catch (Exception e) {
-                        log.error(e.getMessage(), e);
-                        return Mono.error(ERROR_USER_NOT_FOUND);
-                    }
-                }).switchIfEmpty(Mono.error(new BadCredentialsException("로그인을 실패하였습니다. 다시 시도해주세요.")));
+                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())))
+                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange))
+                .switchIfEmpty(Mono.error(new BadCredentialsException("로그인을 실패하였습니다. 다시 시도해주세요.")));
     }
 
     @PostMapping(value = "/refresh-token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)

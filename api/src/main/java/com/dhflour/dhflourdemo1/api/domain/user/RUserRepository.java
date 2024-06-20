@@ -7,5 +7,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface RUserRepository extends ReactiveCrudRepository<RUser, Long> {
 
+    Mono<Boolean> existsByEmail(String email);
     Mono<RUser> findOneByEmail(String email);
 }

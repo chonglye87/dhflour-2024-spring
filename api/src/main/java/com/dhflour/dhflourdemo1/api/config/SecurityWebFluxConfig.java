@@ -22,6 +22,9 @@ public class SecurityWebFluxConfig {
     @Autowired
     private JWTWebFluxRequestFilter jwtRequestFilter;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
@@ -40,14 +43,9 @@ public class SecurityWebFluxConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public UserDetailsRepositoryReactiveAuthenticationManager reactiveAuthenticationManager() {
         UserDetailsRepositoryReactiveAuthenticationManager authenticationManager = new UserDetailsRepositoryReactiveAuthenticationManager(myReactiveUserDetailsService);
-        authenticationManager.setPasswordEncoder(passwordEncoder());
+        authenticationManager.setPasswordEncoder(passwordEncoder);
         return authenticationManager;
     }
 }
