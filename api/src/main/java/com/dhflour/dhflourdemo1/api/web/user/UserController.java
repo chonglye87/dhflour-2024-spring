@@ -4,11 +4,7 @@ import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import com.dhflour.dhflourdemo1.api.domain.user.RequestSignUp;
 import com.dhflour.dhflourdemo1.api.service.user.UserAPIService;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationResponse;
-import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
-import com.dhflour.dhflourdemo1.api.web.auth.AuthController;
-import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
-import com.dhflour.dhflourdemo1.core.types.jwt.MyUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -41,9 +37,6 @@ public class UserController {
     private UserAPIService userAPIService;
 
     @Autowired
-    private JWTSymmetricService jwtService;
-
-    @Autowired
     private UserDetailsRepositoryReactiveAuthenticationManager authenticationManager;
 
     @Operation(summary = "[user-1] 회원가입 (Sign Up)",
@@ -51,7 +44,7 @@ public class UserController {
             operationId = "signUp")
     @ApiResponse(responseCode = "201", description = "성공적으로 회원가입을 하였음",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RUser.class)))
+                    schema = @Schema(implementation = AuthenticationResponse.class)))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<AuthenticationResponse>> signUp(@RequestBody Mono<RequestSignUp> monoBody, ServerWebExchange exchange) {
 
