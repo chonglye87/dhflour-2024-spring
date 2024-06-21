@@ -62,12 +62,13 @@ public class AuthController {
     public Mono<?> createAuthenticationToken(@RequestBody Mono<AuthenticationRequest> monoBody, ServerWebExchange exchange) {
         return monoBody
                 .filter(request -> StringUtils.isNotEmpty(request.getEmail()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty")))
+                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty"))) // 이메일이 비어 있는 경우 BadRequestException을 발생시킵니다.
                 .filter(request -> StringUtils.isNotEmpty(request.getPassword()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
-                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())))
-                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange))
-                .switchIfEmpty(Mono.error(new BadCredentialsException("로그인을 실패하였습니다. 다시 시도해주세요.")));
+                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty"))) // 패스워드가 비어 있는 경우 BadRequestException을 발생시킵니다.
+                .flatMap(request -> authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()))) // 이메일과 패스워드를 사용하여 인증을 시도합니다.
+                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange)) // 인증이 성공하면 userAPIService.authenticate 메서드를 호출하여 추가 인증 작업을 수행합니다.
+                .switchIfEmpty(Mono.error(new BadCredentialsException("로그인을 실패하였습니다. 다시 시도해주세요."))); // 인증 작업이 실패한 경우 BadCredentialsException을 발생시킵니다.
     }
 
     @PostMapping(value = "/refresh-token", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -75,11 +76,12 @@ public class AuthController {
     @ApiResponse(responseCode = "200", description = "JWT Refresh Token 발행함", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = AuthenticationResponse.class)))
     public Mono<?> refresh(@RequestBody Mono<RefreshTokenRequest> monoBody, ServerWebExchange exchange) {
         return monoBody
-                .filter(body -> StringUtils.isNotEmpty(body.getRefreshToken())).switchIfEmpty(Mono.error(new BadRequestException("Refresh token is empty")))
+                .filter(body -> StringUtils.isNotEmpty(body.getRefreshToken()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Refresh token is empty"))) // refreshToken이 비어 있는 경우 BadRequestException을 발생시킵니다.
                 .filter(body -> {
                     final Claims claims = jwtService.verifyToken(body.getRefreshToken());
                     return !jwtService.isTokenExpired(body.getRefreshToken()) && NumberUtils.isCreatable(claims.getId());
-                }).switchIfEmpty(Mono.error(ERROR_EXPIRED_REFRESH_TOKEN))
+                }).switchIfEmpty(Mono.error(ERROR_EXPIRED_REFRESH_TOKEN))  // refreshToken이 만료되지 않았고 claims ID가 유효한지 확인합니다.
                 .flatMap(body -> {
                     final String refreshToken = body.getRefreshToken();
                     final Claims claims = jwtService.verifyToken(refreshToken);
@@ -87,7 +89,7 @@ public class AuthController {
                             .filter(Boolean::booleanValue)
                             .switchIfEmpty(Mono.error(ERROR_EXPIRED_REFRESH_TOKEN))
                             .then(userAPIService.getActiveUser(Long.parseLong(claims.getId())));
-                }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND))
+                }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)) // refreshToken을 검증하고 사용자를 가져옵니다.
                 .flatMap(rUser -> {
                     try {
                         final MyUserDetails myUserDetails = MyUserDetails.builder().id(rUser.getId()).email(rUser.getEmail()).build();
@@ -99,7 +101,7 @@ public class AuthController {
                         log.error(e.getMessage(), e);
                         return Mono.error(ERROR_USER_NOT_FOUND);
                     }
-                }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND));
+                }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)); // 새로운 accessToken과 refreshToken을 생성합니다.
     }
 
 
@@ -117,27 +119,27 @@ public class AuthController {
 
         return monoBody
                 .filter(request -> StringUtils.isNotEmpty(request.getEmail()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty")))
+                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty"))) // 이메일이 비어 있는 경우 BadRequestException을 발생시킵니다.
                 .flatMap(request -> userAPIService.exist(request.getEmail())
-                        .flatMap(exists -> exists ? Mono.error(new BadRequestException("Email already exists")) : Mono.just(request)))
+                        .flatMap(exists -> exists ? Mono.error(new BadRequestException("Email already exists")) : Mono.just(request)))  // 이메일이 이미 존재하는 경우 BadRequestException을 발생시킵니다.
                 .filter(request -> StringUtils.isNotEmpty(request.getUsername()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Username is empty")))
+                .switchIfEmpty(Mono.error(new BadRequestException("Username is empty")))  // username이 비어 있는 경우 BadRequestException을 발생시킵니다.
                 .filter(request -> StringUtils.isNotEmpty(request.getMobile()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Mobile is empty")))
+                .switchIfEmpty(Mono.error(new BadRequestException("Mobile is empty")))  // mobile이 비어 있는 경우 BadRequestException을 발생시킵니다.
                 .filter(request -> StringUtils.isNotEmpty(request.getPassword()))
-                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
+                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))  // email과 password를 저장하고 회원가입을 시도합니다.
                 .flatMap(request -> {
                     email.set(request.getEmail());
                     password.set(request.getPassword());
                     return userAPIService.signUp(request);
-                })
-                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email.get(), password.get())))
-                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange))
+                })  // userAPIService.signUp 메서드를 호출하여 회원가입을 처리합니다.
+                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email.get(), password.get())))  // 회원가입 후 인증을 시도합니다.
+                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange)) // 인증이 성공하면 추가 인증 작업을 수행합니다.
                 .map(authBody -> ResponseEntity
                         .status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(authBody))
-                .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+                        .body(authBody))    // 인증이 성공하면 ResponseEntity를 생성하여 반환합니다.
+                .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());  // 결과가 비어있는 경우 BAD_REQUEST 상태를 반환합니다.
     }
 
     @GetMapping(value = "/authenticated-info", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -146,7 +148,7 @@ public class AuthController {
     public Mono<?> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> userAPIService.getActiveUser(user.getEmail())
-                        .doOnNext(rUser -> log.debug("required authed user : {}", rUser))
+                        .doOnNext(rUser -> log.debug("required authed user : {}", rUser)) // 로그 확인 방법
                         .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
     }
 
