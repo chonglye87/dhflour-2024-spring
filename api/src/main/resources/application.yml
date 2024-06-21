@@ -1,3 +1,4 @@
+# API Application 메인 설정
 application:
   id: 'HyperX_API_App'
   version: 1.0.0
