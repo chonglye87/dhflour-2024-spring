@@ -72,7 +72,7 @@ public class BoardCategoryController {
                     schema = @Schema(implementation = RequestRBoardCategory.class)))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<RBoardCategory>> createBoardCategory(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                                                            @RequestBody RequestRBoardCategory category) {
+                                                                    @RequestBody RequestRBoardCategory category) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> categoryAPIService.create(category.toEntity()))
                 .map(createdEntity -> ResponseEntity

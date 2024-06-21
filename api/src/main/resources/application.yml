@@ -2,6 +2,9 @@ application:
   id: 'HyperX_API_App'
   version: 1.0.0
 
+server:
+  port: 8000
+
 spring:
   application:
     name: API Application
@@ -66,6 +69,7 @@ spring:
     import:
       - classpath:application-r2dbc-dev.properties
       - classpath:application-log-dev.yml
+
 # 운영계 환경 설정
 ---
 

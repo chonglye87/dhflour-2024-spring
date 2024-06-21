@@ -20,7 +20,7 @@ public class BoardAPIServiceImpl implements BoardAPIService {
 
     @Autowired
     private ModelMapperUtils modelMapperUtils;
-    
+
     @Override
     @Transactional(readOnly = true)
     public Mono<Page<RBoard>> page(Pageable pageable) {

@@ -7,8 +7,12 @@ import reactor.core.publisher.Mono;
 
 public interface CategoryAPIService {
     Flux<RBoardCategory> list(Sort sort);
+
     Mono<RBoardCategory> getById(Long id);
+
     Mono<RBoardCategory> create(RBoardCategory entity);
+
     Mono<RBoardCategory> update(Long id, RBoardCategory entity);
+
     Mono<Void> delete(Long id);
 }

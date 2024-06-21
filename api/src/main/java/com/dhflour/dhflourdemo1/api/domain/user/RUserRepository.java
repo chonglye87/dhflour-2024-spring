@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 public interface RUserRepository extends ReactiveCrudRepository<RUser, Long> {
 
     Mono<Boolean> existsByEmail(String email);
+
     Mono<RUser> findOneByEmail(String email);
 
     Flux<RUser> findAllBy(Pageable pageable);

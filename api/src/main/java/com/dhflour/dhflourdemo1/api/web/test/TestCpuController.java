@@ -18,7 +18,7 @@ public class TestCpuController {
 
     @GetMapping("/cpu")
     public Mono<String> cpu() {
-        for(int i = 0; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             CpuIntensiveTask.performCpuIntensiveTask();
             log.debug("i : {}", i);
         }

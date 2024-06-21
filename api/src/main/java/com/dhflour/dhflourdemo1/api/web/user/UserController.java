@@ -53,8 +53,7 @@ public class UserController {
                     schema = @Schema(implementation = RUserPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> pageUser(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                                      @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
-        log.info("page : {}", userDetails);
+                            @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> userManageService.page(pageable))
                 .switchIfEmpty(Mono.error(new NoContentException()))
@@ -69,7 +68,7 @@ public class UserController {
                     schema = @Schema(implementation = RUser.class)))
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> getUserById(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                                @PathVariable Long id) {
+                               @PathVariable Long id) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> userManageService.getById(id));
     }
@@ -82,7 +81,7 @@ public class UserController {
                     schema = @Schema(implementation = RUser.class)))
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<RUser>> createUser(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                                                   @RequestBody RequestRUser requestBody) {
+                                                  @RequestBody RequestRUser requestBody) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> userManageService.create(requestBody.toEntity()))
                 .map(createdEntity -> ResponseEntity
@@ -100,8 +99,8 @@ public class UserController {
                     schema = @Schema(implementation = RequestRUser.class)))
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> updateUser(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                               @PathVariable Long id,
-                               @RequestBody RequestRUser requestBody) {
+                              @PathVariable Long id,
+                              @RequestBody RequestRUser requestBody) {
 
         return AuthUtils.required(userDetails)
                 .filter(details -> AuthUtils.hasRole(details, "ROLE_USER"))
@@ -118,7 +117,7 @@ public class UserController {
     @ApiResponse(responseCode = "204", description = "성공적으로 데이터가 삭제됨")
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> deleteUser(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                               @PathVariable Long id) {
+                              @PathVariable Long id) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> userManageService.delete(id));
     }

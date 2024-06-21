@@ -4,7 +4,7 @@ application:
   version: 1.0.0
 
 server:
-  port: 8081
+  port: 8001
 
 spring:
   profiles:

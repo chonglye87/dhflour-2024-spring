@@ -50,12 +50,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public Mono<Void> handleNotFoundException(ServerWebExchange exchange, NotFoundException ex) {
-        return handleException(exchange, HttpStatus.NOT_FOUND,ex.getMessage());
+        return handleException(exchange, HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(NoContentException.class)
     public Mono<Void> handleNoContentException(ServerWebExchange exchange, NoContentException ex) {
-        return handleException(exchange, HttpStatus.NO_CONTENT,ex.getMessage());
+        return handleException(exchange, HttpStatus.NO_CONTENT, ex.getMessage());
     }
 
     @ExceptionHandler(TooManyRequestsException.class)

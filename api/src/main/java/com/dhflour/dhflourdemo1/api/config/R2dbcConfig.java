@@ -30,6 +30,7 @@ public class R2dbcConfig implements ReactiveAuditorAware<Long> {
 
     /**
      * 등록/수정 사용자 계정 access token 으로 추출
+     *
      * @return 등록/수정 사용자 ID
      */
     @Override

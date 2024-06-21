@@ -7,8 +7,12 @@ import reactor.core.publisher.Mono;
 
 public interface BoardAPIService {
     Mono<Page<RBoard>> page(Pageable pageable);
+
     Mono<RBoard> getById(Long id);
+
     Mono<RBoard> create(RBoard entity);
+
     Mono<RBoard> update(Long id, RBoard entity);
+
     Mono<Void> delete(Long id);
 }

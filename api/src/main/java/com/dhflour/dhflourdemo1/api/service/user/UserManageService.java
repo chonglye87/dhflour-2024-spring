@@ -8,10 +8,15 @@ import reactor.core.publisher.Mono;
 
 public interface UserManageService {
     Mono<Page<RUser>> page(Pageable pageable);
+
     Mono<RUser> getById(Long id);
+
     Mono<RUser> create(RUser entity);
+
     Mono<RUser> update(Long id, RUser entity);
+
     Mono<RUser> updatePassword(Long id, String oldPassword, String newPassword);
+
     Mono<Void> delete(Long id);
 
     Mono<Boolean> checkUnique(RequestRUser requestBody, Long id);
