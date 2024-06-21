@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
  * ReactiveCrudRepository를 확장하여 반응형 방식으로 데이터베이스 작업을 수행한다.
  */
 @Repository
-public interface RUserRepository extends ReactiveCrudRepository<RUser, Long> {
+public interface RUserRepository extends ReactiveCrudRepository<RUser, Long>, RUserRepositoryCustom {
 
     /**
      * 주어진 이메일이 존재하는지 확인한다.

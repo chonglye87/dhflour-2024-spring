@@ -16,6 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class RUser extends AbstractTable<Long> {
 
     @Id
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
     private Long id;
 
     @Schema(description = "사용자명", requiredMode = Schema.RequiredMode.REQUIRED, example = "홍길동")

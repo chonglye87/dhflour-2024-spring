@@ -15,7 +15,7 @@ public class RequestRUser {
     @Schema(description = "휴대폰번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "01011112222", maxLength = 255)
     private String mobile;
 
-    @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.REQUIRED, example = "Yuio1234!", maxLength = 255)
+    @Schema(description = "비밀번호", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "Yuio1234!", maxLength = 255)
     private String password;
 
     @Schema(description = "이용약관동의 여부", requiredMode = Schema.RequiredMode.REQUIRED, example = "true")

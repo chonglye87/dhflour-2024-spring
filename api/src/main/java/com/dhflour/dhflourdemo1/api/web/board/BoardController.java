@@ -61,14 +61,7 @@ public class BoardController {
                                       @RequestParam(value = "categoryIds[]", required = false) List<Long> categoryIds,
                                       @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable,
                                       Locale locale) {
-        log.debug("query={}", query);
-        log.debug("startTime={}", startTime);
-        log.debug("endTime={}", endTime);
-        if (categoryIds != null) {
-            log.debug("categoryIds={}", categoryIds);
-        }
-//        List<Long> categoryIdList = (categoryIds != null) ? Arrays.stream(categoryIds).map(Long::parseLong).collect(Collectors.toList()) : Collections.emptyList();
-        log.debug("pageable={}", pageable);
+
         PageFilter filter = PageFilter.builder()
                 .pageable(pageable)
                 .query(query)
@@ -76,7 +69,6 @@ public class BoardController {
                 .endTime(endTime)
                 .locale(locale)
                 .build();
-        log.debug("filter={}", filter);
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.page(filter, categoryIds))
                 .switchIfEmpty(Mono.error(new NoContentException()))

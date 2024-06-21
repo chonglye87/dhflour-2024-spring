@@ -6,6 +6,7 @@ import com.dhflour.dhflourdemo1.api.domain.user.RequestRUser;
 import com.dhflour.dhflourdemo1.api.domain.user.RequestUpdatePassword;
 import com.dhflour.dhflourdemo1.api.service.user.UserManageService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
+import com.dhflour.dhflourdemo1.api.types.pagination.PageFilter;
 import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.ForbiddenException;
@@ -31,6 +32,9 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+import java.util.Locale;
+
 @Slf4j
 @RequestMapping(value = "/api/v1/user")
 @Tag(name = "회원 API", description = "회원가입 및 회원정보 조회에 대한 API")
@@ -53,9 +57,20 @@ public class UserController {
                     schema = @Schema(implementation = RUserPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> pageUser(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
-                            @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+                            @RequestParam(required = false, defaultValue = "") String query,
+                            @RequestParam(required = false, defaultValue = "") String startTime,
+                            @RequestParam(required = false, defaultValue = "") String endTime,
+                            @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable,
+                            Locale locale) {
+        PageFilter filter = PageFilter.builder()
+                .pageable(pageable)
+                .query(query)
+                .startTime(startTime)
+                .endTime(endTime)
+                .locale(locale)
+                .build();
         return AuthUtils.required(userDetails)
-                .flatMap(user -> userManageService.page(pageable))
+                .flatMap(user -> userManageService.page(filter))
                 .switchIfEmpty(Mono.error(new NoContentException()))
                 .flatMap(pageData -> Mono.just(new RUserPaginationResponse(pageData)));
     }
@@ -137,5 +152,16 @@ public class UserController {
                 .filter(details -> AuthUtils.hasRole(details, "ROLE_USER"))
                 .switchIfEmpty(Mono.error(new ForbiddenException()))
                 .flatMap(details -> userManageService.updatePassword(id, request.getOldPassword(), request.getNewPassword()));
+    }
+
+    @Operation(summary = "[user-7] 여러 회원 삭제 (Delete All)",
+            description = "기존 회원 여러 개를 삭제합니다.",
+            operationId = "deleteUsers", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "성공적으로 데이터가 삭제됨")
+    @DeleteMapping(value = "/delete-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<?> deleteBoards(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
+                                @RequestBody List<Long> ids) {
+        return AuthUtils.required(userDetails)
+                .flatMap(user -> userManageService.deleteAll(ids));
     }
 }

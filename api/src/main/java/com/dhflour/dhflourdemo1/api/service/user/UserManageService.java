@@ -2,9 +2,12 @@ package com.dhflour.dhflourdemo1.api.service.user;
 
 import com.dhflour.dhflourdemo1.api.domain.user.RUser;
 import com.dhflour.dhflourdemo1.api.domain.user.RequestRUser;
+import com.dhflour.dhflourdemo1.api.types.pagination.PageFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 
 /**
@@ -15,10 +18,10 @@ public interface UserManageService {
     /**
      * 사용자 목록을 페이지네이션하여 반환한다.
      *
-     * @param pageable 페이지네이션 정보
+     * @param pageFilter 페이지네이션 정보
      * @return 사용자 목록을 포함하는 Mono<Page<RUser>>
      */
-    Mono<Page<RUser>> page(Pageable pageable);
+    Mono<Page<RUser>> page(PageFilter pageFilter);
 
     /**
      * 주어진 ID에 해당하는 사용자를 조회한다.
@@ -62,6 +65,7 @@ public interface UserManageService {
      * @return 삭제 작업의 완료를 나타내는 Mono<Void>
      */
     Mono<Void> delete(Long id);
+    Mono<Void> deleteAll(List<Long> ids);
 
     /**
      * 주어진 사용자 정보가 고유한지 확인한다.
