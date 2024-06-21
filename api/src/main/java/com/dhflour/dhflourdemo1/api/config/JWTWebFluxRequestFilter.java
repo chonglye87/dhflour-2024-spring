@@ -4,7 +4,6 @@ import com.dhflour.dhflourdemo1.api.service.userdetail.MyReactiveUserDetailsServ
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.core.service.jwt.JWTSymmetricService;
 import com.dhflour.dhflourdemo1.core.types.error.UnauthorizedException;
-import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,34 +25,34 @@ public class JWTWebFluxRequestFilter implements WebFilter {
     private JWTSymmetricService jwtService; // JWT 토큰을 관리하는 서비스
 
     @Autowired
-    private MyReactiveUserDetailsService myReactiveUserDetailsService;
+    private MyReactiveUserDetailsService userDetailsService;
 
     public Boolean validateToken(String token, ReactiveUserDetails userDetails) {
-        final String email = jwtService.extractSubject(token); // 토큰에서 이메일을 추출
-        return (email.equals(userDetails.getEmail()) && !jwtService.isTokenExpired(token)); // 이메일이 일치하고 토큰이 만료되지 않았는지 확인
+        // final String email = jwtService.extractSubject(token); // 토큰에서 이메일을 추출
+        final Long id = jwtService.extractId(token); // 토큰에서 ID 추출
+        return (id.equals(userDetails.getId()) && !jwtService.isTokenExpired(token)); // 이메일이 일치하고 토큰이 만료되지 않았는지 확인
     }
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String authHeader = exchange.getRequest().getHeaders().getFirst(AUTHORIZATION);
         String token = null;
-        String username = "";
+        Long id = null;
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
-                username = jwtService.extractSubject(token);
+                id = jwtService.extractId(token);
             } catch (Exception e) {
                 log.error("Unable to get JWT Token", e);
             }
         }
 
-        if (token != null && StringUtils.isNotEmpty(username) && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (token != null && id != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             String finalToken = token;
-            return this.myReactiveUserDetailsService.findByUsername(username)
+            return userDetailsService.findByUsername(String.valueOf(id))
                     .flatMap(userDetails -> {
                         ReactiveUserDetails details = (ReactiveUserDetails) userDetails;
-                        log.debug("details: {}", details);
                         if (this.validateToken(finalToken, details)) {
                             UsernamePasswordAuthenticationToken authenticationToken =
                                     new UsernamePasswordAuthenticationToken(details, null, details.getAuthorities());

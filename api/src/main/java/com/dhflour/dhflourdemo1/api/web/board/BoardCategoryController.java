@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.board;
 
-import com.dhflour.dhflourdemo1.api.domain.board.BoardPaginationResponse;
+import com.dhflour.dhflourdemo1.api.domain.board.RBoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.domain.category.RBoardCategory;
 import com.dhflour.dhflourdemo1.api.domain.category.RequestRBoardCategory;
 import com.dhflour.dhflourdemo1.api.service.category.CategoryAPIService;
@@ -43,7 +43,7 @@ public class BoardCategoryController {
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BoardPaginationResponse.class)))
+                    schema = @Schema(implementation = RBoardPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                       @Parameter(hidden = true) Sort sort) {

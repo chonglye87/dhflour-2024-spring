@@ -57,7 +57,6 @@ public class BoardAPIServiceImpl implements BoardAPIService {
     @Override
     @Transactional
     public Mono<Void> delete(Long id) {
-
         return repository.findById(id)
                 .switchIfEmpty(Mono.error(new NotFoundException()))
                 .flatMap(rBoardCategory -> repository.deleteById(rBoardCategory.getId()));

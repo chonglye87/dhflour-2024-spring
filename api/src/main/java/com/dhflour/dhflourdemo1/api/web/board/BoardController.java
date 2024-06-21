@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.api.web.board;
 
-import com.dhflour.dhflourdemo1.api.domain.board.BoardPaginationResponse;
+import com.dhflour.dhflourdemo1.api.domain.board.RBoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.domain.board.RBoard;
 import com.dhflour.dhflourdemo1.api.domain.board.RequestRBoard;
 import com.dhflour.dhflourdemo1.api.service.board.BoardAPIService;
@@ -47,14 +47,14 @@ public class BoardController {
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = BoardPaginationResponse.class)))
+                    schema = @Schema(implementation = RBoardPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                       @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.page(pageable))
                 .switchIfEmpty(Mono.error(new NoContentException()))
-                .flatMap(pageData -> Mono.just(new BoardPaginationResponse(pageData)));
+                .flatMap(pageData -> Mono.just(new RBoardPaginationResponse(pageData)));
     }
 
     @Operation(summary = "[board-2] 게시판 상세 조회 (Get by ID)",

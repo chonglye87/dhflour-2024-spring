@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
 import com.dhflour.dhflourdemo1.api.domain.user.RUser;
+import com.dhflour.dhflourdemo1.api.domain.user.RequestSignUp;
 import com.dhflour.dhflourdemo1.api.service.user.UserAPIService;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationRequest;
 import com.dhflour.dhflourdemo1.api.types.jwt.AuthenticationResponse;
@@ -23,15 +24,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 
 @Slf4j
@@ -98,8 +102,46 @@ public class AuthController {
                 }).switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND));
     }
 
+
+    @Operation(summary = "[auth-3] 회원가입 (Sign Up)",
+            description = "회원가입을 합니다.",
+            operationId = "signUp")
+    @ApiResponse(responseCode = "201", description = "성공적으로 회원가입을 하였음",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = AuthenticationResponse.class)))
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<ResponseEntity<AuthenticationResponse>> signUp(@RequestBody Mono<RequestSignUp> monoBody, ServerWebExchange exchange) {
+
+        final AtomicReference<String> email = new AtomicReference<>("");
+        final AtomicReference<String> password = new AtomicReference<>("");
+
+        return monoBody
+                .filter(request -> StringUtils.isNotEmpty(request.getEmail()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Email is empty")))
+                .flatMap(request -> userAPIService.exist(request.getEmail())
+                        .flatMap(exists -> exists ? Mono.error(new BadRequestException("Email already exists")) : Mono.just(request)))
+                .filter(request -> StringUtils.isNotEmpty(request.getUsername()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Username is empty")))
+                .filter(request -> StringUtils.isNotEmpty(request.getMobile()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Mobile is empty")))
+                .filter(request -> StringUtils.isNotEmpty(request.getPassword()))
+                .switchIfEmpty(Mono.error(new BadRequestException("Password is empty")))
+                .flatMap(request -> {
+                    email.set(request.getEmail());
+                    password.set(request.getPassword());
+                    return userAPIService.signUp(request);
+                })
+                .flatMap(request -> authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email.get(), password.get())))
+                .flatMap(authentication -> userAPIService.authenticate(authentication, exchange))
+                .map(authBody -> ResponseEntity
+                        .status(HttpStatus.CREATED)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(authBody))
+                .defaultIfEmpty(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+    }
+
     @GetMapping(value = "/authenticated-info", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "인증된 사용자 정보 조회", description = "JWT를 통해 인증된 사용자 정보를 조회합니다.", operationId = "getAuthenticatedUserInfo", security = @SecurityRequirement(name = "bearerAuth"))
+    @Operation(summary = "[auth-3] 인증된 사용자 정보 조회", description = "JWT를 통해 인증된 사용자 정보를 조회합니다.", operationId = "getAuthenticatedUserInfo", security = @SecurityRequirement(name = "bearerAuth"))
     @ApiResponse(responseCode = "200", description = "인증된 사용자 정보 조회 성공", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = RUser.class)))
     public Mono<?> getAuthenticatedUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
         return AuthUtils.required(userDetails)
@@ -108,13 +150,14 @@ public class AuthController {
                         .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
     }
 
-    @GetMapping(value = "/optional-info", produces = MediaType.APPLICATION_JSON_VALUE)
-    @Operation(summary = "옵션 사용자 정보 조회", description = "JWT를 통해 인증된 사용자 정보 또는 기본 정보를 조회합니다.", operationId = "getOptionalUserInfo", security = @SecurityRequirement(name = "bearerAuth"))
-    @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = RUser.class)))
-    public Mono<?> getOptionalUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
-        return AuthUtils.optional(userDetails)
-                .flatMap(user -> userAPIService.getActiveUser(user.getEmail())
-                        .doOnNext(rUser -> log.debug("option authed user : {}", rUser))
-                        .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
-    }
+//    @GetMapping(value = "/optional-info", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @Operation(summary = "옵션 사용자 정보 조회", description = "JWT를 통해 인증된 사용자 정보 또는 기본 정보를 조회합니다.", operationId = "getOptionalUserInfo", security = @SecurityRequirement(name = "bearerAuth"))
+//    @ApiResponse(responseCode = "200", description = "사용자 정보 조회 성공", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = RUser.class)))
+//    public Mono<?> getOptionalUserInfo(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails) {
+//        return AuthUtils.optional(userDetails)
+//                .flatMap(user -> userAPIService.getActiveUser(user.getEmail())
+//                        .doOnNext(rUser -> log.debug("option authed user : {}", rUser))
+//                        .switchIfEmpty(Mono.error(ERROR_USER_NOT_FOUND)));
+//    }
+
 }

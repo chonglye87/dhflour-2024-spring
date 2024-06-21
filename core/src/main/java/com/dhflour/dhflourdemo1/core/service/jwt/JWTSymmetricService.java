@@ -18,6 +18,8 @@ public interface JWTSymmetricService {
 
     String extractSubject(String token);
 
+    Long extractId(String token);
+
     Boolean isTokenExpired(String token);
 
 }

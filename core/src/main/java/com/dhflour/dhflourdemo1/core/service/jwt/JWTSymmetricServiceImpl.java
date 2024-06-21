@@ -127,6 +127,12 @@ public class JWTSymmetricServiceImpl implements JWTSymmetricService {
         return extractClaim(token, Claims::getSubject);
     }
 
+
+    @Override
+    public Long extractId(String token) {
+        return Long.parseLong(extractClaim(token, Claims::getId));
+    }
+
     @Override
     public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
