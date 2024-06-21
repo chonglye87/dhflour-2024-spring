@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus/config/prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    restart: always
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+
+  grafana:
+    image: "grafana/grafana"
+    ports:
+      - "3001:3000"
+    volumes:
+      - ./grafana/conf:/config_files
+    restart: always
+    depends_on:
+      - prometheus
+    privileged: true
