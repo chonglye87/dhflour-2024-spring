@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public abstract class AbstractTable<K extends java.io.Serializable> implements java.io.Serializable {
     private static final long serialVersionUID = 4729916107584169128L;
 
-    @Schema(description = "등록시간", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
+    @Schema(description = "등록시간", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Integer.class, example = "")
     @CreatedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     protected LocalDateTime createdAt;
@@ -21,7 +21,7 @@ public abstract class AbstractTable<K extends java.io.Serializable> implements j
     @CreatedBy
     protected Long createdBy;
 
-    @Schema(description = "수정시간", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
+    @Schema(description = "수정시간", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Integer.class, example = "")
     @LastModifiedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     protected LocalDateTime updatedAt;
