@@ -118,6 +118,9 @@ Git 설치 방법은 [GIT_INSTALL.md](./doc/GIT_INSTALL.md) 파일을 참고하�
 ### 6. Jenkins 설치
 Jenkins 설치 방법은 [JENKINS_INSTALL.md](./doc/JENKINS_INSTALL.md) 파일을 참고하세요.
 
+### 7. Jenkins 설정
+Jenkins 설정 방법은 [JENKINS_PIPELINE.md](./doc/JENKINS_PIPELINE.md) 파일을 참고하세요.
+
 ---
 
 ## API 명세 확인
