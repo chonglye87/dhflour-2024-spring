@@ -39,8 +39,8 @@ public class BoardAPIServiceImpl implements BoardAPIService {
 
     @Override
     @Transactional(readOnly = true)
-    public Mono<Page<RBoard>> page(PageFilter pageFilter) {
-        return this.repository.findAllBy(pageFilter.getPageable()) // 페이지네이션 정보에 따라 모든 게시판 항목을 조회
+    public Mono<Page<RBoard>> page(PageFilter pageFilter, List<Long> categoryIds) {
+        return this.repository.findAllByFilter(pageFilter, categoryIds) // 페이지네이션 정보에 따라 모든 게시판 항목을 조회
                 .flatMap(this::fillCategories) // 각 RBoard에 대해 categories를 채움
                 .collectList() // 조회된 항목들을 리스트로 수집
                 .zipWith(this.repository.count()) // 전체 항목 수와 수집된 리스트를 함께 결합

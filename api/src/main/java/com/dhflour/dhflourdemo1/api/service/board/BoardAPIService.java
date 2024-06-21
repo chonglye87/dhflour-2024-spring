@@ -19,7 +19,7 @@ public interface BoardAPIService {
      * @param pageFilter 페이지네이션 정보
      * @return 게시판 목록을 포함하는 Mono<Page<RBoard>>
      */
-    Mono<Page<RBoard>> page(PageFilter pageFilter);
+    Mono<Page<RBoard>> page(PageFilter pageFilter, List<Long> categoryIds);
 
     /**
      * 주어진 ID에 해당하는 게시판 항목을 조회한다.

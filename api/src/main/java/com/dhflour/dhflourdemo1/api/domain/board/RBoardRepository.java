@@ -10,7 +10,7 @@ import reactor.core.publisher.Flux;
  * ReactiveCrudRepository를 확장하여 반응형 방식으로 데이터베이스 작업을 수행한다.
  */
 @Repository
-public interface RBoardRepository extends ReactiveCrudRepository<RBoard, Long> {
+public interface RBoardRepository extends ReactiveCrudRepository<RBoard, Long>, RBoardRepositoryCustom {
 
     /**
      * 페이지네이션 정보에 따라 모든 게시판 항목을 조회한다.

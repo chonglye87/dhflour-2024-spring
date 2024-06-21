@@ -30,7 +30,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequestMapping(value = "/api/v1/board")
@@ -57,17 +58,27 @@ public class BoardController {
                                       @RequestParam(required = false, defaultValue = "") String query,
                                       @RequestParam(required = false, defaultValue = "") String startTime,
                                       @RequestParam(required = false, defaultValue = "") String endTime,
-                                      @RequestParam(required = false, defaultValue = "") Long[] categoryIds,
-                                      @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+                                      @RequestParam(value = "categoryIds[]", required = false) List<Long> categoryIds,
+                                      @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable,
+                                      Locale locale) {
         log.debug("query={}", query);
         log.debug("startTime={}", startTime);
         log.debug("endTime={}", endTime);
-        if(categoryIds != null) {
-            log.debug("categoryIds={}", categoryIds.length);
+        if (categoryIds != null) {
+            log.debug("categoryIds={}", categoryIds);
         }
+//        List<Long> categoryIdList = (categoryIds != null) ? Arrays.stream(categoryIds).map(Long::parseLong).collect(Collectors.toList()) : Collections.emptyList();
         log.debug("pageable={}", pageable);
+        PageFilter filter = PageFilter.builder()
+                .pageable(pageable)
+                .query(query)
+                .startTime(startTime)
+                .endTime(endTime)
+                .locale(locale)
+                .build();
+        log.debug("filter={}", filter);
         return AuthUtils.required(userDetails)
-                .flatMap(user -> boardAPIService.page(pageable))
+                .flatMap(user -> boardAPIService.page(filter, categoryIds))
                 .switchIfEmpty(Mono.error(new NoContentException()))
                 .flatMap(pageData -> Mono.just(new RBoardPaginationResponse(pageData)));
     }

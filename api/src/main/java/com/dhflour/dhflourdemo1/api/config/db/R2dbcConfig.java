@@ -8,6 +8,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.ReactiveAuditorAware;
 import org.springframework.data.r2dbc.config.EnableR2dbcAuditing;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
+import org.springframework.data.r2dbc.dialect.DialectResolver;
+import org.springframework.data.r2dbc.dialect.R2dbcDialect;
 import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 import org.springframework.r2dbc.connection.R2dbcTransactionManager;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
@@ -84,6 +86,13 @@ public class R2dbcConfig implements ReactiveAuditorAware<Long> {
         return new R2dbcEntityTemplate(databaseClient.getConnectionFactory());
     }
 
+//    @Bean
+//    public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
+//        DatabaseClient databaseClient = DatabaseClient.builder().connectionFactory(connectionFactory).build();
+//        R2dbcDialect dialect = DialectResolver.getDialect(connectionFactory);
+//        return new R2dbcEntityTemplate(databaseClient, dialect);
+//    }
+
     /**
      * R2dbcTransactionManager 빈을 생성한다.
      *
@@ -109,6 +118,7 @@ public class R2dbcConfig implements ReactiveAuditorAware<Long> {
         // initializer.setDatabasePopulator(new ResourceDatabasePopulator(new ClassPathResource("schema.sql")));
         return initializer;
     }
+
 }
 
 
