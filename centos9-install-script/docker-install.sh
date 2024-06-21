@@ -15,3 +15,12 @@ if [ $? -eq 0 ]; then
 else
     echo "Docker 설치에 실패했습니다."
 fi
+
+# Docker Compose 최신 버전 다운로드 및 설치
+sudo curl -L "https://github.com/docker/compose/releases/download/$(sudo curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r .tag_name)/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+# Docker Compose 실행 권한 부여
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Docker Compose 설치 확인
+docker-compose --version
