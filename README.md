@@ -98,10 +98,10 @@ Nginx 설치 및 실행 방법은 [NGINX_INSTALL.md](./doc/NGINX_INSTALL.md) 파
 ### 2. JDK 17 설치 및 실행
 JDK 17 설치 및 실행 방법은 [JDK17_INSTALL.md](./doc/JDK17_INSTALL.md) 파일을 참고하세요.
 
-### 3. Docker 설치 및 실행
+### 3. Docker / Docker Compose 설치 및 실행
 Docker 설치 및 실행 방법은 [DOCKER_INSTALL.md](./doc/DOCKER_INSTALL.md) 파일을 참고하세요.
 
-### 4. NVM 설치
+### 4. NVM(Node Version Manager) / PM2 설치
 NVM 설치 방법은 [NVM_INSTALL.md](./doc/NVM_INSTALL.md) 파일을 참고하세요.
 
 ### 5. Git 설치
