@@ -117,3 +117,12 @@ Git 설치 방법은 [GIT_INSTALL.md](./doc/GIT_INSTALL.md) 파일을 참고하�
 
 ### 6. Jenkins 설치
 Jenkins 설치 방법은 [JENKINS_INSTALL.md](./doc/JENKINS_INSTALL.md) 파일을 참고하세요.
+
+---
+
+## API 명세 확인
+```bash
+cd api
+gradle clean bootRun
+```
+[Swagger API](http://localhost:8080/swagger-ui.html) 바로가기
