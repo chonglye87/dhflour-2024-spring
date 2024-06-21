@@ -12,9 +12,9 @@ import java.io.Serializable;
 @ToString
 public class AuthenticationRequest implements Serializable {
 
-    @Schema(description = "email", required = true, example = "test@test.com")
+    @Schema(description = "email", requiredMode = Schema.RequiredMode.REQUIRED, example = "test@test.com")
     private String email;
 
-    @Schema(description = "password", required = true, example = "1234")
+    @Schema(description = "password", requiredMode = Schema.RequiredMode.REQUIRED, example = "1234")
     private String password;
 }

@@ -1,0 +1,19 @@
+server:
+  http_listen_port: 9080  # Promtail 서버가 9080 포트에서 HTTP 요청 수신
+  grpc_listen_port: 0  # GRPC 비활성화
+
+positions:
+  filename: /tmp/positions.yaml  # 포지션 파일 위치
+
+clients:
+  - url: http://loki:3100/loki/api/v1/push  # Loki 서버 URL 설정
+
+scrape_configs:
+  - job_name: system
+    static_configs:
+      - targets:
+          - localhost  # 로컬호스트 타겟 설정
+        labels:
+          job: varlogs
+          compose_service: app-service-1
+          __path__: /mnt/logs/*.log  # 로그 파일 경로 설정

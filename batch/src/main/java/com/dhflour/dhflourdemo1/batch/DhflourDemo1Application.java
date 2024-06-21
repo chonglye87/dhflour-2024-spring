@@ -14,10 +14,7 @@ import java.util.Properties;
         "com.dhflour.dhflourdemo1.jpa",
         "com.dhflour.dhflourdemo1.core",
 })
-@EnableJpaRepositories(
-        basePackages = {"com.dhflour.dhflourdemo1.jpa.domain"},
-        transactionManagerRef = "jpaTransactionManager"
-)
+@EnableJpaRepositories(basePackages = {"com.dhflour.dhflourdemo1.jpa.domain"})
 @EntityScan({"com.dhflour.dhflourdemo1.jpa.domain"})
 public class DhflourDemo1Application {
 

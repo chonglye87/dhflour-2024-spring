@@ -1,12 +1,13 @@
 package com.dhflour.dhflourdemo1.api.web.auth;
 
 import com.dhflour.dhflourdemo1.api.domain.user.RUser;
-import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.api.types.jwt.UserSampleBody;
+import com.dhflour.dhflourdemo1.core.service.jwt.JWTAsymmetricService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 
 // 비대칭키용 JWT
+@Tag(name = "[샘플] 비대칭키 JWT API")
 @RestController
 @RequestMapping("/api/asymmetric/jwt")
 public class JWTAsymmetricController {

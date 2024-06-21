@@ -5,10 +5,12 @@ import com.dhflour.dhflourdemo1.core.types.error.*;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -48,7 +50,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public Mono<Void> handleNotFoundException(ServerWebExchange exchange, NotFoundException ex) {
-        return handleException(exchange, HttpStatus.NOT_FOUND,ex.getMessage());
+        return handleException(exchange, HttpStatus.NOT_FOUND, ex.getMessage());
+    }
+
+    @ExceptionHandler(NoContentException.class)
+    public Mono<Void> handleNoContentException(ServerWebExchange exchange, NoContentException ex) {
+        return handleException(exchange, HttpStatus.NO_CONTENT, ex.getMessage());
     }
 
     @ExceptionHandler(TooManyRequestsException.class)
@@ -58,6 +65,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UnauthorizedException.class)
     public Mono<Void> handleUnauthorizedException(ServerWebExchange exchange, UnauthorizedException ex) {
+        return handleException(exchange, HttpStatus.UNAUTHORIZED, ex.getMessage());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public Mono<Void> handleBadCredentialsException(ServerWebExchange exchange, BadCredentialsException ex) {
         return handleException(exchange, HttpStatus.UNAUTHORIZED, ex.getMessage());
     }
 

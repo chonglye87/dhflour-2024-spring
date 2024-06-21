@@ -1,6 +1,5 @@
 package com.dhflour.dhflourdemo1.jpa.service.user;
 
-import com.dhflour.dhflourdemo1.core.config.tx.JPATransactional;
 import com.dhflour.dhflourdemo1.jpa.domain.user.UserEntity;
 import com.dhflour.dhflourdemo1.jpa.domain.user.UserEntityRepository;
 import com.dhflour.dhflourdemo1.jpa.domain.user.UserEntitySpecifications;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Locale;
 
@@ -28,14 +28,14 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    @JPATransactional
+    @Transactional
     public UserEntity create(UserEntity entity) {
         entity.setPassword(passwordEncoder.encode(entity.getPassword()));
         return userEntityRepository.save(entity);
     }
 
     @Override
-    @JPATransactional
+    @Transactional
     public UserEntity update(UserEntity entity) {
         if (entity.getId() == null) {
             throw new BadRequestException();
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @JPATransactional
+    @Transactional
     public void delete(UserEntity entity) {
         userEntityRepository.findById(entity.getId())
                 .ifPresent(_entity -> {
@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @JPATransactional(readOnly = true)
+    @Transactional(readOnly = true)
     public UserEntity get(Locale locale, Long id) {
         return userEntityRepository.findById(id).map(entity -> {
             // 후처리
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @JPATransactional(readOnly = true)
+    @Transactional(readOnly = true)
     public Page<UserEntity> page(PageFilter filter) {
         Specification<UserEntity> spec = Specification.where(null);
 

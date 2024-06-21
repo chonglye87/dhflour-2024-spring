@@ -1,9 +1,14 @@
+# API Application 메인 설정
 application:
   id: 'HyperX_API_App'
-  title: 'API Application'
   version: 1.0.0
 
+#server:
+#  port: 8000
+
 spring:
+  application:
+    name: API Application
   profiles:
     # process env (local,dev,prod) 설정
     # active: dev
@@ -18,12 +23,31 @@ spring:
     import:
       - classpath:application-prometheus.properties
       - classpath:application-apidoc.yml
-      - classpath:application-logger.properties
       - classpath:application-jwt.yml
 
   main:
     web-application-type: reactive
     allow-bean-definition-overriding: true
+
+#logging:
+#  config: classpath:logback-spring.xml
+#management:
+#  tracing:
+#    enabled: true
+#    sampling:
+#      probability: 1.0
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#logging:
+#  pattern:
+#    correlation: "[${spring.application.name:},%X{traceId:-},%X{spanId:-}] "
+#  include-application-name: false
+#otel:
+#  exporter:
+#    otlp:
+#      endpoint: "http://localhost:4317"
 
 # 로컬 환경 설정
 ---
@@ -34,7 +58,7 @@ spring:
       on-profile: local
     import:
       - classpath:application-r2dbc-local.properties
-      - classpath:application-log-local.properties
+      - classpath:application-log-local.yml
 
 # 개발계 환경 설정
 ---
@@ -45,7 +69,8 @@ spring:
       on-profile: dev
     import:
       - classpath:application-r2dbc-dev.properties
-      - classpath:application-log-dev.properties
+      - classpath:application-log-dev.yml
+
 # 운영계 환경 설정
 ---
 
@@ -55,4 +80,4 @@ spring:
       on-profile: prod
     import:
       - classpath:application-r2dbc-prod.properties
-      - classpath:application-log-prod.properties
+      - classpath:application-log-prod.yml

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserSampleBody implements Serializable {
+
     private Long id;
     private String username;
 }

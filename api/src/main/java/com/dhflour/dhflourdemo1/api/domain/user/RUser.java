@@ -1,20 +1,19 @@
 package com.dhflour.dhflourdemo1.api.domain.user;
 
+import com.dhflour.dhflourdemo1.api.domain.AbstractTable;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.data.annotation.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.time.LocalDateTime;
 
 @Setter
 @Getter
 @ToString
 @Table("user")
-public class RUser {
+public class RUser extends AbstractTable<Long> {
 
     @Id
     private Long id;
@@ -39,27 +38,4 @@ public class RUser {
 
     @Schema(description = "마케팅수신동의 여부", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "true")
     private boolean marketing;
-
-    @CreatedDate
-    @Schema(description = "등록시간", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "")
-    private LocalDateTime createdAt;
-
-    @CreatedBy
-    @JsonIgnore
-    @Schema(description = "등록자", hidden = true)
-    private Long createdBy;
-
-    @LastModifiedDate
-    @Schema(description = "수정시간", requiredMode = Schema.RequiredMode.NOT_REQUIRED, example = "")
-    private LocalDateTime updatedAt;
-
-    @LastModifiedBy
-    @JsonIgnore
-    @Schema(description = "수정자", hidden = true)
-    private Long updatedBy;
-
-    @Version
-    @JsonIgnore
-    @Schema(description = "버전", hidden = true)
-    private Long version;
 }
