@@ -52,6 +52,9 @@ public class BoardController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                       @RequestParam(required = false, defaultValue = "") String query,
+                                      @RequestParam(required = false, defaultValue = "") String startTime,
+                                      @RequestParam(required = false, defaultValue = "") String endTime,
+                                      @RequestParam(required = false, defaultValue = "") Long[] categoryIds,
                                       @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.page(pageable))

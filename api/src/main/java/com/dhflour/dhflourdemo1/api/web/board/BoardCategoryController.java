@@ -43,7 +43,7 @@ public class BoardCategoryController {
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = RBoardPaginationResponse.class)))
+                    schema = @Schema(implementation = RBoardCategory.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                       @Parameter(hidden = true) Sort sort) {
