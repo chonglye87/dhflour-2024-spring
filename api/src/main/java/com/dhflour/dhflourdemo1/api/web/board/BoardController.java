@@ -1,8 +1,9 @@
 package com.dhflour.dhflourdemo1.api.web.board;
 
-import com.dhflour.dhflourdemo1.api.domain.board.RBoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.domain.board.RBoard;
+import com.dhflour.dhflourdemo1.api.domain.board.RBoardPaginationResponse;
 import com.dhflour.dhflourdemo1.api.domain.board.RequestRBoard;
+import com.dhflour.dhflourdemo1.api.domain.boardcategory.RBoardToCategory;
 import com.dhflour.dhflourdemo1.api.service.board.BoardAPIService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
 import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
@@ -80,7 +81,7 @@ public class BoardController {
     public Mono<ResponseEntity<RBoard>> createBoard(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                                     @RequestBody RequestRBoard requestBody) {
         return AuthUtils.required(userDetails)
-                .flatMap(user -> boardAPIService.create(requestBody.toEntity()))
+                .flatMap(user -> boardAPIService.create(requestBody.toEntity(), requestBody.getCategoryIds()))
                 .map(createdEntity -> ResponseEntity
                         .status(HttpStatus.CREATED)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -99,7 +100,7 @@ public class BoardController {
                                @PathVariable Long id,
                                @RequestBody RequestRBoard requestBody) {
         return AuthUtils.required(userDetails)
-                .flatMap(user -> boardAPIService.update(id, requestBody.toEntity()));
+                .flatMap(user -> boardAPIService.update(id, requestBody.toEntity(), requestBody.getCategoryIds()));
     }
 
     @Operation(summary = "[board-5] 게시판 삭제 (Delete)",

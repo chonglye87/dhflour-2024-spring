@@ -4,3 +4,8 @@ springdoc:
     path: /api-docs
   swagger-ui:
     path: /swagger-ui.html
+    display-request-duration: true
+  info:
+    title: API 문서
+    description: 대한제분 API, powered by Spring Boot 3
+    version: v1.0.0

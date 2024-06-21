@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config;
+package com.dhflour.dhflourdemo1.api.config.logger;
 
 import brave.sampler.Sampler;
 import io.micrometer.observation.ObservationRegistry;

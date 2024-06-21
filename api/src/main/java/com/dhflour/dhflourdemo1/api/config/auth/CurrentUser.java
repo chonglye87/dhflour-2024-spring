@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.api.config;
+package com.dhflour.dhflourdemo1.api.config.auth;
 
 import java.lang.annotation.*;
 

@@ -4,7 +4,7 @@ import java.util.stream.LongStream;
 
 public class CpuIntensiveTask {
 
-
+    // CPU 부하 테스트용 함수 (테스트할때만 사용)
     public static void performCpuIntensiveTask() {
 
         LongStream.range(Long.MAX_VALUE / 2, Long.MAX_VALUE)

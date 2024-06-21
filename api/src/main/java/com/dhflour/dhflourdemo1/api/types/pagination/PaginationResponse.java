@@ -15,16 +15,16 @@ import java.util.List;
 @Schema(description = "페이지네이션 응답 구조")
 public class PaginationResponse<T> {
 
-    @Schema(description = "현재 페이지 번호", example = "0", implementation = Integer.class)
+    @Schema(description = "현재 페이지 번호", example = "0", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Integer.class)
     private int page;
 
-    @Schema(description = "페이지 크기", example = "20", implementation = Integer.class)
+    @Schema(description = "페이지 크기", example = "20", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Integer.class)
     private int size;
 
-    @Schema(description = "전체 요소 수", example = "100", implementation = Long.class)
+    @Schema(description = "전체 요소 수", example = "100", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Long.class)
     private long totalElements;
 
-    @Schema(description = "전체 페이지 수", example = "5", implementation = Integer.class)
+    @Schema(description = "전체 페이지 수", example = "5", requiredMode = Schema.RequiredMode.REQUIRED, implementation = Integer.class)
     private int totalPages;
 
     @ArraySchema(arraySchema = @Schema(description = "페이지에 포함된 콘텐츠"))

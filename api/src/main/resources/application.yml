@@ -3,8 +3,8 @@ application:
   id: 'HyperX_API_App'
   version: 1.0.0
 
-server:
-  port: 8000
+#server:
+#  port: 8000
 
 spring:
   application:
