@@ -19,6 +19,7 @@ import java.util.List;
 public class RBoard extends AbstractTable<Long> {
 
     @Id
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
     private Long id;
 
     @Schema(description = "제목", requiredMode = Schema.RequiredMode.REQUIRED, example = "")

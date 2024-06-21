@@ -2,9 +2,14 @@ package com.dhflour.dhflourdemo1.api.config.api;
 
 import com.dhflour.dhflourdemo1.api.config.auth.CurrentUserArgumentResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.ReactivePageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.ReactiveSortHandlerMethodArgumentResolver;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.reactive.config.CorsRegistry;
 import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
@@ -29,18 +34,18 @@ public class APIWebFluxConfigurer implements WebFluxConfigurer {
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
+        registry.addMapping("/**")
                 .allowedOrigins(
+                        "http://localhost",
                         "http://localhost:3000",
-                        "http://localhost:8083",
-                        "http://localhost:8082",
-                        "http://43.201.69.193:3000",
-                        "http://43.201.69.193"
+                        "http://43.201.69.193",
+                        "http://43.201.69.193:3000"
                 )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")  // 허용할 HTTP 메서드 지정, 기본적인 CRUD 작업에 사용되는 메서드 포함
                 .allowedHeaders("*")  // 허용할 요청 헤더 지정, '*'는 모든 헤더를 허용함
                 .allowCredentials(true);
     }
+
 
     /**
      * 커스텀 Argument Resolver를 추가하는 메서드.

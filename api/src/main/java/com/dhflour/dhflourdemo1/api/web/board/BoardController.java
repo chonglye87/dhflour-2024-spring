@@ -45,12 +45,14 @@ public class BoardController {
             @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "20", schema = @Schema(implementation = Integer.class)),
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "현재 페이지 0부터 (Current Page)  현재 페이지 (default : 0)", example = "0", schema = @Schema(implementation = Integer.class)),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 (Sort Page)", example = "created_at,desc", schema = @Schema(implementation = String.class)),
+            @Parameter(in = ParameterIn.QUERY, name = "query", description = "검색어", example = "", schema = @Schema(implementation = String.class)),
     })
     @ApiResponse(responseCode = "200", description = "성공적으로 페이지 정보를 불러옴",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = RBoardPaginationResponse.class)))
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> getBoardCategories(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
+                                      @Parameter String query,
                                       @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.page(pageable))
