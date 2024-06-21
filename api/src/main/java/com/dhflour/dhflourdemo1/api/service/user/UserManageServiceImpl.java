@@ -32,7 +32,6 @@ public class UserManageServiceImpl implements UserManageService {
     @Override
     @Transactional(readOnly = true)
     public Mono<Page<RUser>> page(Pageable pageable) {
-        log.debug("pageable : {}", pageable);
         return repository.findAllBy(pageable)
                 .collectList()
                 .zipWith(this.repository.count())
@@ -49,6 +48,7 @@ public class UserManageServiceImpl implements UserManageService {
     @Override
     @Transactional
     public Mono<RUser> create(RUser user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return repository.save(user);
     }
 

@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.jpa.types;
+package com.dhflour.dhflourdemo1.api.types.pagination;
 
 import org.springframework.data.domain.Pageable;
 
@@ -8,30 +8,31 @@ import java.util.Locale;
 
 public class PageFilter implements Serializable {
 
-    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
-//    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//    public final static DateTimeFormatter FORMATTER_DATE_ONLY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final long serialVersionUID = 7986177657377217045L;
+
+    public final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    public final static DateTimeFormatter FORMATTER_DATE_ONLY = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private Locale locale;
     private Pageable pageable;
     private String query;
-    private String startTime;
-    private String endTime;
+    private String startDate;
+    private String endDate;
 
     private PageFilter(Builder builder) {
         this.locale = builder.locale;
         this.pageable = builder.pageable;
         this.query = builder.query;
-        this.startTime = builder.startTime;
-        this.endTime = builder.endTime;
+        this.startDate = builder.startDate;
+        this.endDate = builder.endDate;
     }
 
     public static class Builder {
         private Locale locale;
         private Pageable pageable;
         private String query;
-        private String startTime;
-        private String endTime;
+        private String startDate;
+        private String endDate;
 
         public Builder() {
             this.locale = Locale.KOREAN; // 기본값 설정
@@ -52,13 +53,13 @@ public class PageFilter implements Serializable {
             return this;
         }
 
-        public Builder startTime(String startTime) {
-            this.startTime = startTime;
+        public Builder startDate(String startDate) {
+            this.startDate = startDate;
             return this;
         }
 
-        public Builder endTime(String endTime) {
-            this.endTime = endTime;
+        public Builder endDate(String endDate) {
+            this.endDate = endDate;
             return this;
         }
 
@@ -80,11 +81,11 @@ public class PageFilter implements Serializable {
         return query;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getStartDate() {
+        return startDate;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getEndDate() {
+        return endDate;
     }
 }

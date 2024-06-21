@@ -5,6 +5,7 @@ import com.dhflour.dhflourdemo1.api.domain.board.RBoardRepository;
 import com.dhflour.dhflourdemo1.api.domain.boardcategory.RBoardToCategory;
 import com.dhflour.dhflourdemo1.api.domain.boardcategory.RBoardToCategoryRepository;
 import com.dhflour.dhflourdemo1.api.domain.category.RBoardCategoryRepository;
+import com.dhflour.dhflourdemo1.api.types.pagination.PageFilter;
 import com.dhflour.dhflourdemo1.api.utils.ModelMapperUtils;
 import com.dhflour.dhflourdemo1.core.types.error.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -37,12 +39,12 @@ public class BoardAPIServiceImpl implements BoardAPIService {
 
     @Override
     @Transactional(readOnly = true)
-    public Mono<Page<RBoard>> page(Pageable pageable) {
-        return this.repository.findAllBy(pageable) // 페이지네이션 정보에 따라 모든 게시판 항목을 조회
+    public Mono<Page<RBoard>> page(PageFilter pageFilter) {
+        return this.repository.findAllBy(pageFilter.getPageable()) // 페이지네이션 정보에 따라 모든 게시판 항목을 조회
                 .flatMap(this::fillCategories) // 각 RBoard에 대해 categories를 채움
                 .collectList() // 조회된 항목들을 리스트로 수집
                 .zipWith(this.repository.count()) // 전체 항목 수와 수집된 리스트를 함께 결합
-                .map(p -> new PageImpl<>(p.getT1(), pageable, p.getT2())); // 수집된 리스트와 전체 항목 수를 사용해 Page 객체를 생성
+                .map(p -> new PageImpl<>(p.getT1(), pageFilter.getPageable(), p.getT2())); // 수집된 리스트와 전체 항목 수를 사용해 Page 객체를 생성
     }
 
     @Override
@@ -125,10 +127,41 @@ public class BoardAPIServiceImpl implements BoardAPIService {
     @Override
     @Transactional
     public Mono<Void> delete(Long id) {
-        return repository.findById(id) // 주어진 ID에 해당하는 게시판 항목을 조회
-                .switchIfEmpty(Mono.error(new NotFoundException())) // 조회된 항목이 없으면 NotFoundException을 발생시킴
-                .flatMap(rBoardCategory -> repository.deleteById(rBoardCategory.getId())); // 조회된 항목이 존재하면 해당 항목을 삭제
+        return repository.findById(id) // 주어진 ID에 해당하는 RBoard 엔티티를 조회
+                .switchIfEmpty(Mono.error(new NotFoundException())) // 조회된 엔티티가 없으면 NotFoundException을 발생시킴
+                .flatMap(existingEntity -> {
+                    // 관련된 RBoardToCategory 엔티티들을 먼저 삭제
+                    Mono<Void> deleteCategories = boardToCategoryRepository.deleteByBoardId(id);
+
+                    // RBoard 엔티티 자체를 삭제
+                    Mono<Void> deleteBoard = repository.deleteById(existingEntity.getId());
+
+                    // 두 삭제 작업이 모두 완료되면 Mono 반환
+                    return deleteCategories.then(deleteBoard);
+                });
     }
+
+    @Override
+    @Transactional
+    public Mono<Void> deleteAll(List<Long> ids) {
+        // 주어진 ID 목록에 해당하는 RBoard 엔티티들을 조회
+        return Flux.fromIterable(ids)
+                .flatMap(id -> repository.findById(id)
+                        .switchIfEmpty(Mono.error(new NotFoundException())) // 만약 엔티티가 존재하지 않으면 NotFoundException 발생
+                        .flatMap(existingEntity -> {
+                            // 관련된 RBoardToCategory 엔티티들을 먼저 삭제
+                            Mono<Void> deleteCategories = boardToCategoryRepository.deleteByBoardId(id);
+
+                            // RBoard 엔티티 자체를 삭제
+                            Mono<Void> deleteBoard = repository.deleteById(existingEntity.getId());
+
+                            // 두 삭제 작업이 모두 완료되면 Mono 반환
+                            return deleteCategories.then(deleteBoard);
+                        })
+                )
+                .then(); // 모든 삭제 작업이 완료되면 Mono<Void> 반환
+    }
+
 
     private Mono<RBoard> fillCategories(RBoard board) {
         return this.boardToCategoryRepository.findByBoardId(board.getId())

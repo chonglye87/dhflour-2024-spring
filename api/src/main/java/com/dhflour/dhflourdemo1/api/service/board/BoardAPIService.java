@@ -1,6 +1,7 @@
 package com.dhflour.dhflourdemo1.api.service.board;
 
 import com.dhflour.dhflourdemo1.api.domain.board.RBoard;
+import com.dhflour.dhflourdemo1.api.types.pagination.PageFilter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Mono;
@@ -15,10 +16,10 @@ public interface BoardAPIService {
     /**
      * 게시판 목록을 페이지네이션하여 반환한다.
      *
-     * @param pageable 페이지네이션 정보
+     * @param pageFilter 페이지네이션 정보
      * @return 게시판 목록을 포함하는 Mono<Page<RBoard>>
      */
-    Mono<Page<RBoard>> page(Pageable pageable);
+    Mono<Page<RBoard>> page(PageFilter pageFilter);
 
     /**
      * 주어진 ID에 해당하는 게시판 항목을 조회한다.
@@ -54,4 +55,5 @@ public interface BoardAPIService {
      * @return 삭제 작업의 완료를 나타내는 Mono<Void>
      */
     Mono<Void> delete(Long id);
+    Mono<Void> deleteAll(List<Long> ids);
 }

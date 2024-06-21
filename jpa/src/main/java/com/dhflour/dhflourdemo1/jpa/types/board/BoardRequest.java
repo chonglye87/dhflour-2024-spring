@@ -1,4 +1,4 @@
-package com.dhflour.dhflourdemo1.core.types.board;
+package com.dhflour.dhflourdemo1.jpa.types.board;
 
 
 import lombok.AllArgsConstructor;

@@ -6,6 +6,7 @@ import com.dhflour.dhflourdemo1.api.domain.board.RequestRBoard;
 import com.dhflour.dhflourdemo1.api.domain.boardcategory.RBoardToCategory;
 import com.dhflour.dhflourdemo1.api.service.board.BoardAPIService;
 import com.dhflour.dhflourdemo1.api.types.jwt.ReactiveUserDetails;
+import com.dhflour.dhflourdemo1.api.types.pagination.PageFilter;
 import com.dhflour.dhflourdemo1.api.utils.AuthUtils;
 import com.dhflour.dhflourdemo1.core.types.error.NoContentException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -29,6 +30,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Slf4j
 @RequestMapping(value = "/api/v1/board")
 @Tag(name = "게시판 API", description = "공지사항 대한 API")
@@ -42,7 +45,7 @@ public class BoardController {
             description = "게시판 목록 조회합니다.",
             operationId = "pageBoard", security = @SecurityRequirement(name = "bearerAuth"))
     @Parameters(value = {
-            @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "20", schema = @Schema(implementation = Integer.class)),
+            @Parameter(in = ParameterIn.QUERY, name = "size", description = "Page Size 페이지 크기 (default : 20)", example = "10", schema = @Schema(implementation = Integer.class)),
             @Parameter(in = ParameterIn.QUERY, name = "page", description = "현재 페이지 0부터 (Current Page)  현재 페이지 (default : 0)", example = "0", schema = @Schema(implementation = Integer.class)),
             @Parameter(in = ParameterIn.QUERY, name = "sort", description = "정렬 (Sort Page)", example = "created_at,desc", schema = @Schema(implementation = String.class)),
     })
@@ -56,6 +59,13 @@ public class BoardController {
                                       @RequestParam(required = false, defaultValue = "") String endTime,
                                       @RequestParam(required = false, defaultValue = "") Long[] categoryIds,
                                       @Parameter(hidden = true) @PageableDefault(sort = "created_at", direction = Sort.Direction.DESC) Pageable pageable) {
+        log.debug("query={}", query);
+        log.debug("startTime={}", startTime);
+        log.debug("endTime={}", endTime);
+        if(categoryIds != null) {
+            log.debug("categoryIds={}", categoryIds.length);
+        }
+        log.debug("pageable={}", pageable);
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.page(pageable))
                 .switchIfEmpty(Mono.error(new NoContentException()))
@@ -110,11 +120,23 @@ public class BoardController {
     @Operation(summary = "[board-5] 게시판 삭제 (Delete)",
             description = "기존 게시판를 삭제합니다.",
             operationId = "deleteBoard", security = @SecurityRequirement(name = "bearerAuth"))
-    @ApiResponse(responseCode = "204", description = "성공적으로 데이터가 삭제됨")
+    @ApiResponse(responseCode = "200", description = "성공적으로 데이터가 삭제됨")
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<?> deleteBoard(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
                                @PathVariable Long id) {
         return AuthUtils.required(userDetails)
                 .flatMap(user -> boardAPIService.delete(id));
     }
+
+    @Operation(summary = "[board-6] 여러 게시판 삭제 (Delete All)",
+            description = "기존 게시판 여러 개를 삭제합니다.",
+            operationId = "deleteBoards", security = @SecurityRequirement(name = "bearerAuth"))
+    @ApiResponse(responseCode = "200", description = "성공적으로 데이터가 삭제됨")
+    @DeleteMapping(value = "/delete-all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Mono<?> deleteBoards(@AuthenticationPrincipal Mono<ReactiveUserDetails> userDetails,
+                                @RequestBody List<Long> ids) {
+        return AuthUtils.required(userDetails)
+                .flatMap(user -> boardAPIService.deleteAll(ids));
+    }
+
 }

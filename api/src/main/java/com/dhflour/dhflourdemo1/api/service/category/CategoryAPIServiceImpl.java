@@ -3,6 +3,7 @@ package com.dhflour.dhflourdemo1.api.service.category;
 import com.dhflour.dhflourdemo1.api.domain.category.RBoardCategory;
 import com.dhflour.dhflourdemo1.api.domain.category.RBoardCategoryRepository;
 import com.dhflour.dhflourdemo1.api.utils.ModelMapperUtils;
+import com.dhflour.dhflourdemo1.core.types.error.NoContentException;
 import com.dhflour.dhflourdemo1.core.types.error.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class CategoryAPIServiceImpl implements CategoryAPIService {
     @Transactional(readOnly = true)
     public Flux<RBoardCategory> list(Sort sort) {
         return repository.findAll(sort)
-                .switchIfEmpty(Mono.error(new NotFoundException()));
+                .switchIfEmpty(Mono.error(new NoContentException()));
     }
 
     @Override

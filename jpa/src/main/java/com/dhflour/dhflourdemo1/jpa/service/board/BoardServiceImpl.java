@@ -1,6 +1,6 @@
 package com.dhflour.dhflourdemo1.jpa.service.board;
 
-import com.dhflour.dhflourdemo1.core.types.board.BoardRequest;
+import com.dhflour.dhflourdemo1.jpa.types.board.BoardRequest;
 import com.dhflour.dhflourdemo1.core.types.error.BadRequestException;
 import com.dhflour.dhflourdemo1.core.types.error.UpdateErrorException;
 import com.dhflour.dhflourdemo1.jpa.domain.board.BoardEntity;

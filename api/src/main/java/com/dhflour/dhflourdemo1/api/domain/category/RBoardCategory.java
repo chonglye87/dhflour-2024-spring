@@ -15,6 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 public class RBoardCategory extends AbstractTable<Long> {
 
     @Id
+    @Schema(description = "ID", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
     private Long id;
 
     @Schema(description = "카테고리명", requiredMode = Schema.RequiredMode.REQUIRED, example = "")
