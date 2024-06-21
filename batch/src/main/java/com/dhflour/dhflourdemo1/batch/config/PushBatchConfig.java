@@ -45,6 +45,7 @@ public class PushBatchConfig {
     @Autowired
     private Gson gson;
 
+    // RetryTemplate을 생성하는 Bean, 재시도 간격 및 최대 재시도 횟수를 설정한다.
     @Bean
     public RetryTemplate retryTemplate() {
         RetryTemplate retryTemplate = new RetryTemplate();
@@ -63,6 +64,7 @@ public class PushBatchConfig {
         return retryTemplate;
     }
 
+    // Job을 생성하는 Bean, pushNotificationStep을 시작으로 설정하고, Job 실행 완료 시 listener를 등록한다.
     @Bean
     public Job pushNotificationJob(JobRepository jobRepository, Step pushNotificationStep) {
         return new JobBuilder("pushNotificationJob", jobRepository)
@@ -71,24 +73,28 @@ public class PushBatchConfig {
                 .build();
     }
 
+    // JobExecutionListener를 생성하는 Bean, Job 실행 완료 시 특정 작업을 수행하는 listener를 반환한다.
     @Bean
     public JobExecutionListener listener() {
         return new JobCompletionNotificationListener();
     }
 
+    // Step을 생성하는 Bean, pushNotificationTasklet을 tasklet으로 설정하고 트랜잭션 매니저를 사용한다.
     @Bean
     public Step pushNotificationStep(JobRepository jobRepository, PlatformTransactionManager transactionManager, Tasklet pushNotificationTasklet) {
         return new StepBuilder("pushNotificationStep", jobRepository)
                 .tasklet(pushNotificationTasklet, transactionManager)
                 .build();
     }
+
+    // Tasklet을 생성하는 Bean, PushNotificationEntityRepository와 KafkaTemplate을 사용하여 10,000개의 가상 데이터를 생성하고 Kafka로 전송한다.
     @Bean
     @StepScope
     public Tasklet pushNotificationTasklet(PushNotificationEntityRepository repository, KafkaTemplate<String, String> kafkaTemplate) {
         return (StepContribution contribution, ChunkContext chunkContext) -> {
             log.debug("repository.count() : {}", repository.count());
             // repository.findAll().forEach(notification -> { // Original code commented out
-            for (int i = 0; i < 100; i++) { // Loop for generating 100,000 virtual data entries
+            for (int i = 0; i < 10000; i++) { // Loop for generating 100,000 virtual data entries
                 try {
                     final String recipient = "recipient" + i + "@example.com"; // Example recipient
                     final String notificationMessage = "This is a test message #" + i; // Example message
@@ -106,11 +112,13 @@ public class PushBatchConfig {
         };
     }
 
+    // KafkaTemplate을 생성하는 Bean, KafkaProducer를 사용하여 Kafka로 메시지를 전송한다.
     @Bean
     public KafkaTemplate<String, String> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 
+    // ProducerFactory를 생성하는 Bean, Kafka 프로듀서의 설정을 정의하고 반환한다.
     @Bean
     public ProducerFactory<String, String> producerFactory() {
         Map<String, Object> configProps = new HashMap<>();
@@ -120,6 +128,7 @@ public class PushBatchConfig {
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
+    // TaskExecutor를 생성하는 Bean, SimpleAsyncTaskExecutor를 사용하여 비동기 작업을 수행한다.
     @Bean
     public TaskExecutor taskExecutor() {
         return new SimpleAsyncTaskExecutor("batch_task_executor");
